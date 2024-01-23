@@ -1,6 +1,5 @@
 "use client";
-
-import * as React from "react";
+import { useState } from "react";
 import { columns } from "./columns";
 
 import {
@@ -15,8 +14,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
@@ -30,17 +27,13 @@ import {
 } from "@/components/ui/table";
 
 import { data } from "./constants/data";
-import IssueDialog from "../components/IssueDialog";
 import AddItem from "../components/AddItem";
 
 export function Category() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -76,25 +69,6 @@ export function Category() {
         <AddItem />
       </div>
 
-      <Tabs defaultValue="account" className="w-[400px]">
-        <TabsList className="  gap-4  justify-start">
-          <TabsTrigger className="bg-green-300" value="account">
-            All
-          </TabsTrigger>
-          <TabsTrigger className="bg-green-300" value="all">
-            Accounts
-          </TabsTrigger>
-          <TabsTrigger className="bg-purple-300" value="password">
-            Password
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="all">Data for all will be showm here.</TabsContent>
-        <TabsContent value="account">
-          Make changes to your account here.
-        </TabsContent>
-        <TabsContent value="password">Change your password here.</TabsContent>
-      </Tabs>
-
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -121,9 +95,9 @@ export function Category() {
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <TableCell
-                      className=""
+                      className=" cursor-pointer"
                       key={cell.id}
-                      onClick={() => console.log("id:", row.original.id)}
+                      onClick={() => console.log("mf", row.original.id)}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

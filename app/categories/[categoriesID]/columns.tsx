@@ -2,9 +2,8 @@ import { Payment } from "@/types/Payment";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import IssueDialog from "../components/IssueDialog";
+import ProductCell from "./components/ProductCell";
 
 export const columns: ColumnDef<Payment>[] = [
   {
@@ -15,10 +14,8 @@ export const columns: ColumnDef<Payment>[] = [
     ),
   },
   {
-    // email
     accessorKey: "email",
     header: ({ column }) => {
-      // console.log("column: ", column);
       return (
         <Button
           variant="ghost"
@@ -30,13 +27,8 @@ export const columns: ColumnDef<Payment>[] = [
       );
     },
     cell: ({ row }) => {
-      const test = usePathname();
-      // console.log("ROW MF", row.original);
-      return (
-        <Link href={`${test}/${row.original.id}`} className="lowercase">
-          {row.getValue("email")}
-        </Link>
-      );
+      const data = row.getValue("email") as string;
+      return <ProductCell data={data} id={row.original.id} />;
     },
   },
 
@@ -50,7 +42,6 @@ export const columns: ColumnDef<Payment>[] = [
         style: "currency",
         currency: "USD",
       }).format(amount);
-
       return <div className="text-left font-medium">25</div>;
     },
   },
@@ -59,14 +50,9 @@ export const columns: ColumnDef<Payment>[] = [
     accessorKey: "company",
     header: () => <div className="text-left">Company</div>,
     cell: ({ row }) => {
-      // const amount = parseFloat(row.getValue("amount"));
-
-      // const formatted = new Intl.NumberFormat("en-US", {
-      //   style: "currency",
-      //   currency: "USD",
-      // }).format(amount);
-
-      return <div className="text-left font-medium">{row.getValue("company")}</div>;
+      return (
+        <div className="text-left font-medium">{row.getValue("company")}</div>
+      );
     },
   },
   {

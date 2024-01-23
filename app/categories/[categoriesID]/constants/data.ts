@@ -84,4 +84,11 @@ export const data: Payment[] = [
     company: "Ford",
     email: "carmella@hotmail.com",
   },
+  {
+    id: "wwbhnm",
+    amount: 721,
+    status: "13",
+    company: "X7",
+    email: "Sillion",
+  },
 ];
