@@ -29,7 +29,7 @@ import {
 import { data } from "./constants/data";
 import AddItem from "../components/AddItem";
 
-export function Category() {
+const Category = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -146,6 +146,6 @@ export function Category() {
       </div>
     </div>
   );
-}
+};
 
 export default Category;

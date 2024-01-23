@@ -25,7 +25,7 @@ declare module "next-auth" {
   // }
 }
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
@@ -39,11 +39,11 @@ export const authOptions: NextAuthOptions = {
   providers: [],
 };
 
-export const getServerAuthSession = (ctx: {
+const getServerAuthSession = (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];
 }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
-
-export default NextAuth(authOptions);
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
