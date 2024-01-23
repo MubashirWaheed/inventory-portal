@@ -14,14 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
@@ -30,8 +23,7 @@ const formSchema = z.object({
   }),
 });
 
-export function Login() {
-  // 1. Define your form.
+const Login = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,10 +31,7 @@ export function Login() {
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
   }
 
@@ -51,9 +40,6 @@ export function Login() {
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Login to the portal</CardTitle>
-          {/* <CardDescription>
-            Deploy your new project in one-click.
-          </CardDescription> */}
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -88,13 +74,9 @@ export function Login() {
             </form>
           </Form>
         </CardContent>
-        {/* <CardFooter className="flex justify-between">
-          <Button variant="outline">Cancel</Button>
-          <Button>Deploy</Button>
-        </CardFooter> */}
       </Card>
     </div>
   );
-}
+};
 
 export default Login;
