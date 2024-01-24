@@ -95,7 +95,7 @@ const Category = () => {
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <TableCell
-                      className=" cursor-pointer"
+                      className="cursor-pointer"
                       key={cell.id}
                       onClick={() => console.log("mf", row.original.id)}
                     >

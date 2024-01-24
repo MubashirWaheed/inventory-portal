@@ -9,7 +9,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const logged = false;
   const path = usePathname();
   const { display, setDisplay } = useSidebar();
-  const isLoginRoute = path === "/login";
+  const isLoginRoute = path === "/sign-in";
 
   return (
     <div>

@@ -3,8 +3,10 @@ import { MenuIcon } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SideNav } from "@/components/layout/SideNav";
 import { NavItems } from "@/components/constants/SideNav";
+import { useSession } from "@clerk/nextjs";
 
 export const MobileSidebar = () => {
+  const { isLoaded, session, isSignedIn } = useSession();
   const [open, setOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -21,7 +23,7 @@ export const MobileSidebar = () => {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <div className="flex items-center justify-center gap-2">
-            <MenuIcon />
+            {session && <MenuIcon />}
             <h1 className="text-lg font-semibold">Inventory Portal</h1>
           </div>
         </SheetTrigger>

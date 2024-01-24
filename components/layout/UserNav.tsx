@@ -1,7 +1,5 @@
 "use client";
 
-import { signOut } from "next-auth/react";
-import type { User } from "next-auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,28 +9,34 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-// import { UserAvatar } from "@/components/layout/user-avatar";
+import { UserAvatar } from "@/components/layout/UserAvatar";
+import { useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 type Props = {
-  user: Pick<User, "name" | "image" | "email">;
+  name: string | undefined | null;
+  email: string | undefined;
 };
 
-export function UserNav({ user }: Props) {
+export function UserNav({ name = "", email = "" }: Props) {
+  const { signOut } = useClerk();
+  const router = useRouter();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        {/* <UserAvatar
-          user={{ name: user.name || null, image: user.image || null }}
+        <UserAvatar
+          user={{ name: name || null, image: null }}
           className="h-8 w-8 cursor-pointer"
-        /> */}
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <div className="flex items-center justify-start gap-4 p-2">
           <div className="flex flex-col space-y-1 leading-none">
-            {user.name && <p className="font-medium">{user.name}</p>}
-            {user.email && (
+            {name && <p className="font-medium">{name}</p>}
+            {email && (
               <p className="w-[200px] truncate text-sm text-zinc-700">
-                {user.email}
+                {email}
               </p>
             )}
           </div>
@@ -41,12 +45,18 @@ export function UserNav({ user }: Props) {
         <DropdownMenuItem asChild>
           <Button
             variant="outline"
-            className="w-full"
+            className="w-full cursor-pointer"
             onClick={() => {
-              void signOut();
+              signOut(() => {
+                router.refresh();
+                router.push("/sign-in");
+              });
             }}
           >
-            <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+            <LogOut
+              className="cursor-pointer mr-2 h-4 w-4"
+              aria-hidden="true"
+            />
             Log Out
           </Button>
         </DropdownMenuItem>

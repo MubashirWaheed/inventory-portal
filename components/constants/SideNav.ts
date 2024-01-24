@@ -9,7 +9,6 @@ export const NavItems: NavItem[] = [
     href: "/",
     color: "text-sky-500",
   },
-
   {
     title: "Categories",
     icon: ListTodo,
