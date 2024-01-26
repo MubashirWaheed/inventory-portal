@@ -6,9 +6,8 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "@/hooks/useSidebar";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  const logged = false;
   const path = usePathname();
-  const { display, setDisplay } = useSidebar();
+  const { display } = useSidebar();
   const isLoginRoute = path === "/sign-in";
 
   return (

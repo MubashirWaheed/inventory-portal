@@ -8,23 +8,16 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import { useSignIn } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useSession, useSignIn } from "@clerk/nextjs";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 
 const formSchema = z.object({
@@ -40,6 +33,7 @@ const formSchema = z.object({
 const Login = () => {
   const { isLoaded, signIn, setActive } = useSignIn();
   const router = useRouter();
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -131,7 +125,7 @@ const Login = () => {
                   </FormMessage>
                 </div>
               )}
-              <div className=" flex justify-center ">
+              <div className="flex justify-center ">
                 <Button type="submit">Submit</Button>
               </div>
             </form>
