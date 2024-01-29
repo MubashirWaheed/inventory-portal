@@ -17,7 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 import { useSession, useSignIn } from "@clerk/nextjs";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const formSchema = z.object({
@@ -31,6 +31,8 @@ const formSchema = z.object({
 });
 
 const Login = () => {
+  const [disable, setDisable] = useState(false);
+
   const { isLoaded, signIn, setActive } = useSignIn();
   const router = useRouter();
 
@@ -47,11 +49,13 @@ const Login = () => {
   const clearErrorMessage = () => {
     setErrorMessage(null);
   };
+
   // values: z.infer<typeof formSchema>
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!isLoaded) return;
 
     const { email, password } = values;
+    setDisable(true);
 
     try {
       const result = await signIn?.create({
@@ -63,6 +67,7 @@ const Login = () => {
         console.log(result);
         await setActive({ session: result.createdSessionId });
         router.push("/");
+        setDisable(false);
       } else {
         console.log(result);
       }
@@ -125,8 +130,10 @@ const Login = () => {
                   </FormMessage>
                 </div>
               )}
-              <div className="flex justify-center ">
-                <Button type="submit">Submit</Button>
+              <div className="flex justify-center">
+                <Button disabled={disable} type="submit">
+                  Submit
+                </Button>
               </div>
             </form>
           </Form>

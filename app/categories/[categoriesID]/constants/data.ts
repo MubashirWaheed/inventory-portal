@@ -11,7 +11,7 @@ export const data: Payment[] = [
     id: "3u1reuv4",
     amount: 242,
     status: "2",
-    email: "Royal Tissue box",
+    email: "Royal-Tissue-Box",
     company: "wurth",
   },
   {

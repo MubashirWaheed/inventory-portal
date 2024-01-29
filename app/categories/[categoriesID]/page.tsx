@@ -27,7 +27,8 @@ import {
 } from "@/components/ui/table";
 
 import { data } from "./constants/data";
-import AddItem from "../components/AddItem";
+import AddItem from "./components/AddItem";
+import UpdateCategory from "./components/UpdateCategory";
 
 const Category = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -66,7 +67,10 @@ const Category = () => {
           }
           className="max-w-sm"
         />
-        <AddItem />
+        <div className="flex gap-3">
+          {/* <UpdateCategory /> */}
+          <AddItem />
+        </div>
       </div>
 
       <Table>

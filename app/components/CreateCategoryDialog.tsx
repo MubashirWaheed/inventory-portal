@@ -1,5 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
+
+import toast, { Toaster } from "react-hot-toast";
+
 import {
   Dialog,
   DialogContent,
@@ -8,70 +11,127 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
+
 import { Input } from "@/components/ui/input";
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import axios from "axios";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
+
+const formSchema = z.object({
+  category: z
+    .string()
+    .min(3, {
+      message: "Category must be at least 2 characters.",
+    })
+    .max(30)
+    .trim()
+    .refine((value) => /^[a-zA-Z0-9-]+$/.test(value), {
+      message: "Category can only contain letters, numbers, and hyphens.",
+    }),
+});
 
 const CreateCategoryDialog = () => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
-  const form = useForm();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      category: "",
+    },
+  });
 
-  const onSubmit = async (values: any) => {
+  const { isValid, isSubmitting, isSubmitted, errors } = form.formState;
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { category } = values;
-    console.log("HELLO MF", values);
-    const res = await axios.post("/api/category", { category });
-    console.log("why res not being logged: ", res);
+    try {
+      await axios.post("/api/categories", { category });
+      toast.success("Category created");
+      setOpen(false);
+      form.reset();
+      router.refresh();
+    } catch (error: any) {
+      console.log("error from the backend: ", error);
+      toast.error(error?.response?.data);
+    }
   };
 
+  useEffect(() => {
+    if (!open) {
+      form.reset();
+    }
+  }, [open]);
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="default">Create Category</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Create Category</DialogTitle>
-        </DialogHeader>
-        <div className="gap-4 py-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input type="text" placeholder="Category" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              {/* how to close this dialog on successful category creation */}
-              <DialogFooter>
-                <Button
-                  onClick={() => setOpen(false)}
-                  className="mt-4"
-                  type="submit"
-                >
-                  Create
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button size="sm" variant="default">
+            Create Category
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Create Category</DialogTitle>
+          </DialogHeader>
+
+          <div className="gap-4 py-4">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isSubmitting}
+                          type="text"
+                          placeholder="oil-filters"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* {errors && (
+                  <div className="mt-0">
+                    <FormMessage className="mt-0 pt-0"></FormMessage>
+                  </div>
+                )} */}
+                <DialogFooter>
+                  <Button
+                    disabled={!isValid || isSubmitting}
+                    className="mt-4"
+                    type="submit"
+                  >
+                    Create
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <Toaster />
+    </div>
   );
 };
 

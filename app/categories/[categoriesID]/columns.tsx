@@ -2,7 +2,7 @@ import { Payment } from "@/types/Payment";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import IssueDialog from "../components/IssueDialog";
+import IssueDialog from "./components/IssueDialog";
 import ProductCell from "./components/ProductCell";
 
 export const columns: ColumnDef<Payment>[] = [

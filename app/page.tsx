@@ -6,15 +6,76 @@ import CategoryDialog from "./components/CreateCategoryDialog";
 export default function Home() {
   return (
     <div className="px-8 pt-6 pb-8">
-      <div className="flex justify-between">
+      <div className="flex flex-col lg:flex-row justify-between">
         <h2 className=" font-bold text-3xl tracking-tight">Dashboard</h2>
-        <div className="flex items-center gap-4">
+        <div className="flex justify-center flex-col sm:flex-row items-center gap-4">
           <DatePickerWithRange />
           <CategoryDialog />
         </div>
       </div>
-      <div className="mt-4 flex flex-col md:flex-row justify-between gap-4">
-        <Card className="w-full">
+      <div className="mt-4 w-full h-full grid sm:grid-cols-2  lg:grid-cols-4 gap-4 ">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">
+              Opening Stock
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">1230</div>
+            <p className="text-sm text-muted-foreground">
+              stock at the start of January
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">
+              Current Stock
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">1160</div>
+            <p className="text-sm text-muted-foreground">
+              Number of item in the inventory
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">
+              Stock Bought
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">230</div>
+            <p className="text-sm text-muted-foreground">
+              in the month of January
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">
+              Items Issued
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">130</div>
+            <p className="text-sm text-muted-foreground">
+              in the month of January
+            </p>
+          </CardContent>
+        </Card>
+        {/* <Card className="col-span-1 min-h-36 md:min-h-48">
+          <CardHeader>
+            <CardTitle>Total Skus</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>1200</p>
+          </CardContent>
+        </Card> */}
+        {/* <Card className="col-span-1 min-h-36 md:min-h-48">
           <CardHeader>
             <CardTitle>Total Skus</CardTitle>
           </CardHeader>
@@ -22,30 +83,15 @@ export default function Home() {
             <p>1200</p>
           </CardContent>
         </Card>
-        <Card className="w-full">
+
+        <Card className="col-span-1 min-h-36 md:min-h-48">
           <CardHeader>
-            <CardTitle>Total Categories</CardTitle>
+            <CardTitle>Search Inventory</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>4</p>
+            <p>1200</p>
           </CardContent>
-        </Card>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Total Items Issued</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>30</p>
-          </CardContent>
-        </Card>
-        <Card className=" w-full">
-          <CardHeader>
-            <CardTitle>Skus Bought</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>50</p>
-          </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

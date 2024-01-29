@@ -21,16 +21,17 @@ export default function Sidebar({ className }: SidebarProps) {
     toggle();
     setTimeout(() => setSwitch(false), 500);
   };
+
   return (
     <nav
       className={cn(
-        `relative hidden h-screen border-r pt-16 md:block`,
+        `relative hidden h-screen border-r pt-16 md:block overflow-y-auto`,
         swith && "duration-500",
         isOpen ? "w-72" : "w-[78px]",
         className,
       )}
     >
-      <div className="space-y-4 py-4">
+      <div className="h-full ">
         <div className="px-3 py-2">
           <div className="mt-3 space-y-1">
             <SideNav
@@ -39,15 +40,15 @@ export default function Sidebar({ className }: SidebarProps) {
             />
           </div>
         </div>
-      </div>
-      <div className="mt-30 absolute bottom-5 w-full space-y-2 px-3">
-        <Separator />
-        <Button
-          onClick={handleToggle}
-          className={cn("h-10 w-full bg-foreground", isOpen && "rotate-180")}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        <div className="w-full space-y-2 px-3  pb-2">
+          <Separator />
+          <Button
+            onClick={handleToggle}
+            className={cn("h-10 w-full bg-foreground", isOpen && "rotate-180")}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </nav>
   );
