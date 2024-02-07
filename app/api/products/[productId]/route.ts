@@ -3,17 +3,15 @@ import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 // UPDATE QUANTITY FOR PARTICULAR PRODUCT
-
 export async function PUT(req: Request) {
   const request = await req.json();
   let { quantity, id, jobCard, issuedTo, linkTo, dateOfIssue, operation } =
     request;
 
-  console.log("request: ", request);
-
   const { userId } = auth();
 
   if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+
   try {
     // FETCH THE PRODUCT QUANTITY
     const product = await prisma.product.findUnique({
@@ -22,9 +20,7 @@ export async function PUT(req: Request) {
       },
     });
 
-    if (!product) {
-      return new NextResponse("Product not found", { status: 404 });
-    }
+    if (!product) return new NextResponse("Product not found", { status: 404 });
 
     let updatedQuantity = product.quantity;
 
@@ -70,14 +66,25 @@ export async function PUT(req: Request) {
       return NextResponse.json("Issed item succesfully");
     } else if (operation == "ADD_STOCK") {
       try {
-        const result = await prisma.product.update({
-          where: {
-            id,
-          },
-          data: {
-            quantity: updatedQuantity,
-          },
-        });
+        // simply create the addd to stock transaction here
+        const [test, stockItem] = await prisma.$transaction([
+          prisma.product.update({
+            where: {
+              id,
+            },
+            data: {
+              quantity: updatedQuantity,
+            },
+          }),
+
+          prisma.addSock.create({
+            data: {
+              quantity,
+              productId: id,
+            },
+          }),
+        ]);
+
         return NextResponse.json("added stock");
       } catch (error) {
         return new NextResponse("error adding stock", { status: 401 });
@@ -87,4 +94,8 @@ export async function PUT(req: Request) {
     console.log("ERROR: ", error);
     return new NextResponse("error", { status: 500 });
   }
+}
+
+export async function GET(req: Request) {
+  // get the issue details
 }

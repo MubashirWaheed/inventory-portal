@@ -3,10 +3,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 // { data: string; id: string }
-const ProductCell = ({ data, id }: any) => {
+const ProductCell = ({ data: productName, id }: any) => {
   const path = usePathname();
-  // id should be the value
-  return <Link href={`${path}/${id}`}>{data}</Link>;
+  return <Link href={`${path}/${id}`}>{productName}</Link>;
 };
 
 export default ProductCell;

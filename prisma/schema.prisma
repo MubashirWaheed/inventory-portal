@@ -25,6 +25,7 @@ model Product {
   categoryId Int
   Category   Category    @relation(fields: [categoryId], references: [id])
   IssuedItem IssueItem[]
+  AddSock    AddSock[]
 
   // list of all the time the item was issued
   @@index([categoryId])
@@ -38,6 +39,16 @@ model IssueItem {
   issuedTo       String
   productId      Int
   Product        Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+}
+
+model AddSock {
+  id        Int      @id @default(autoincrement())
+  addedAt   DateTime @default(now())
+  quantity  Int
+  productId Int
+  Product   Product  @relation(fields: [productId], references: [id])
 
   @@index([productId])
 }

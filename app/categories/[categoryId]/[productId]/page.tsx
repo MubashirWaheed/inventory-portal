@@ -31,28 +31,38 @@ import {
 } from "@/components/ui/card";
 
 import { invoices } from "../constants/invoices";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetecher";
+import { addDays, format, getMonth, startOfMonth } from "date-fns";
+import { useParams } from "next/navigation";
+import { DateRange } from "react-day-picker";
 
+// Get all the issue data for the product and display in table
 const Product = () => {
-  const itemsPerPage = 10; // Set the number of items per page
-  const [currentPage, setCurrentPage] = useState(1);
+  const currentDate = new Date();
+  const firstDayOfMonth = startOfMonth(currentDate);
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: firstDayOfMonth,
+    to: new Date(),
+  });
 
-  const totalInvoices = invoices.length;
-  const totalPages = Math.ceil(totalInvoices / itemsPerPage);
+  const params = useParams();
+  const { productId } = params;
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentInvoices = invoices.slice(startIndex, endIndex);
+  const { data } = useSWR(
+    `/api/issueItem/${productId}?from=${date?.from}&to=${date?.to}`,
+    fetcher,
+  );
+  console.log("data from the issueItem API ", data);
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
   return (
     <div className="px-8 pb-8 pt-6">
       <div className="flex justify-between">
         <h2 className="text-3xl font-bold">MGL:300</h2>
-        <DatePickerWithRange />
+        <DatePickerWithRange date={date} setDate={setDate} />
       </div>
 
+      {/* CARD */}
       <Card className="mt-5 py-2">
         <CardHeader className="py-3">
           <CardTitle>Overview</CardTitle>
@@ -78,8 +88,9 @@ const Product = () => {
           </div>
         </div>
       </Card>
+
       <div>
-        <Table>
+        {/* <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[200px]">Date</TableHead>
@@ -90,7 +101,6 @@ const Product = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {/* invoices */}
             {currentInvoices.map((invoice) => (
               <TableRow key={invoice.invoice}>
                 <TableCell className="font-medium">{invoice.invoice}</TableCell>
@@ -103,10 +113,10 @@ const Product = () => {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+        </Table> */}
       </div>
 
-      <Pagination>
+      {/* <Pagination>
         <PaginationContent>
           <PaginationPrevious
             href="#"
@@ -129,7 +139,7 @@ const Product = () => {
             // disabled={currentPage === totalPages}
           />
         </PaginationContent>
-      </Pagination>
+      </Pagination> */}
     </div>
   );
 };
