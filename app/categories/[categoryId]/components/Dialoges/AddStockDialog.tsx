@@ -15,6 +15,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { Toaster } from "@/components/ui/sonner";
 import {
   Form,
   FormControl,
@@ -25,6 +26,8 @@ import {
 } from "@/components/ui/form";
 import axios from "axios";
 import { useSWRConfig } from "swr";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 type Product = {
   id: number;
@@ -55,14 +58,22 @@ const AddStockDialog = ({ item }: { item: Product }) => {
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    let operation = "ADD_STOCK";
     try {
-      await axios.put(`/api/products/${id}`, { ...values, id });
+      await axios.put(`/api/products/${id}`, { ...values, id, operation });
       mutate(`/api/categories/${categoryId}`);
       form.reset();
+      toast.success("Restocked Successfully", {
+        style: {
+          fontSize: "16px",
+        },
+        className: "class",
+      });
       setOpen(false);
       console.log("submitted");
     } catch (error) {
       console.log("ERROR: ", error);
+      toast.error("Error adding items to stock");
     }
   };
 
@@ -73,9 +84,6 @@ const AddStockDialog = ({ item }: { item: Product }) => {
   }, [open]);
 
   return (
-    // Not passing anything to the modal
-    // Make it dynamic
-
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm">Add Stock</Button>
@@ -115,6 +123,8 @@ const AddStockDialog = ({ item }: { item: Product }) => {
           </form>
         </Form>
       </DialogContent>
+
+      <Toaster className="text-center" position="top-center" richColors />
     </Dialog>
   );
 };

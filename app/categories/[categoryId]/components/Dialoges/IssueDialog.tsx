@@ -104,8 +104,9 @@ const IssueDialog = ({ item }: { item: Product }) => {
 
   const onSubmit = async (values: z.infer<typeof issueFormSchema>) => {
     values.quantity = -values.quantity;
+    let operation = "ISSUE_STOCK";
     try {
-      await axios.put(`/api/products/${id}`, { ...values, id });
+      await axios.put(`/api/products/${id}`, { ...values, id, operation });
       mutate(`/api/categories/${categoryId}`);
       setOpen((prev) => false);
       toast.success("Item issued Successfully");

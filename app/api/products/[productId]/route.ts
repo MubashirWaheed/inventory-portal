@@ -6,7 +6,8 @@ import { NextResponse } from "next/server";
 
 export async function PUT(req: Request) {
   const request = await req.json();
-  let { quantity, id, jobCard, issuedTo, linkTo, dateOfIssue } = request;
+  let { quantity, id, jobCard, issuedTo, linkTo, dateOfIssue, operation } =
+    request;
 
   console.log("request: ", request);
 
@@ -45,29 +46,45 @@ export async function PUT(req: Request) {
       jobCard = "garage";
     }
 
-    const [productUpdated, issueItem] = await prisma.$transaction([
-      prisma.product.update({
-        where: {
-          id,
-        },
-        data: {
-          quantity: updatedQuantity,
-        },
-      }),
+    if (operation == "ISSUE_STOCK") {
+      const [productUpdated, issueItem] = await prisma.$transaction([
+        prisma.product.update({
+          where: {
+            id,
+          },
+          data: {
+            quantity: updatedQuantity,
+          },
+        }),
 
-      prisma.issueItem.create({
-        data: {
-          productId: id,
-          issuedTo,
-          issuedQuantity: quantity,
-          issuedAt: dateOfIssue,
-          jobCard,
-        },
-      }),
-    ]);
-    return NextResponse.json("added stock");
+        prisma.issueItem.create({
+          data: {
+            productId: id,
+            issuedTo,
+            issuedQuantity: quantity,
+            issuedAt: dateOfIssue,
+            jobCard,
+          },
+        }),
+      ]);
+      return NextResponse.json("Issed item succesfully");
+    } else if (operation == "ADD_STOCK") {
+      try {
+        const result = await prisma.product.update({
+          where: {
+            id,
+          },
+          data: {
+            quantity: updatedQuantity,
+          },
+        });
+        return NextResponse.json("added stock");
+      } catch (error) {
+        return new NextResponse("error adding stock", { status: 401 });
+      }
+    }
   } catch (error) {
     console.log("ERROR: ", error);
-    return new NextResponse("errror", { status: 500 });
+    return new NextResponse("error", { status: 500 });
   }
 }
