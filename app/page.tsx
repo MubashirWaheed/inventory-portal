@@ -2,14 +2,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePickerWithRange } from "@/components/ui/daterangepicker";
 import CategoryDialog from "./components/CreateCategoryDialog";
+import { startOfMonth } from "date-fns";
+import { useState } from "react";
+import { DateRange } from "react-day-picker";
 
 export default function Home() {
+  const currentDate = new Date();
+  const firstDayOfMonth = startOfMonth(currentDate);
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: firstDayOfMonth,
+    to: new Date(),
+  });
   return (
     <div className="px-8 pt-6 pb-8">
       <div className="flex flex-col lg:flex-row justify-between">
         <h2 className=" font-bold text-3xl tracking-tight">Dashboard</h2>
         <div className="flex justify-center flex-col sm:flex-row items-center gap-4">
-          <DatePickerWithRange />
+          <DatePickerWithRange date={date} setDate={setDate} />
           <CategoryDialog />
         </div>
       </div>
