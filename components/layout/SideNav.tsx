@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
-
+import { List, Settings } from "lucide-react";
 import { type NavItem } from "@/types/SideNav";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "@/hooks/useSidebar";
 import { buttonVariants } from "@/components/ui/button";
+import toast, { Toaster } from "react-hot-toast";
 
 import {
   Accordion,
@@ -18,7 +19,7 @@ import { ChevronDownIcon } from "@radix-ui/react-icons";
 
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetecher";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, ListTodo } from "lucide-react";
 
 interface SideNavProps {
   items: NavItem[];
@@ -27,9 +28,7 @@ interface SideNavProps {
 }
 
 export function SideNav({ items, setOpen, className }: SideNavProps) {
-  // Make API request
-  const { data, error, isLoading } = useSWR("/api/categories", fetcher);
-  console.log("data: ", data);
+  const { data, error } = useSWR("/api/categories", fetcher);
 
   const path = usePathname();
   const { isOpen } = useSidebar();
@@ -39,7 +38,6 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
 
   useEffect(() => {
     if (isOpen) {
-      console.log("lastOpenItem: ", lastOpenItem);
       setOpenItem(lastOpenItem);
     } else {
       setLastOpenItem(openItem);
@@ -47,103 +45,17 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error?.response?.data);
+    }
+  }, [error]);
+
   return (
-    // display categories  based the data fetcehd from the DB
-    <nav className=" space-y-2 flex flex-col">
+    <nav className="space-y-2 flex flex-col">
       <div className="">
-        {items.map((item, index) =>
-          item.isChidren ? (
-            <Accordion
-              type="single"
-              collapsible
-              className="space-y-2"
-              key={item.title}
-              value={openItem}
-              onValueChange={setOpenItem}
-            >
-              <AccordionItem value={item.title} className="border-none">
-                <AccordionTrigger
-                  onClick={() => {
-                    !isOpen && toggle();
-                  }}
-                  className={cn(
-                    buttonVariants({ variant: "ghost" }),
-                    "group relative flex h-12 justify-between px-4 py-2 text-base duration-200 hover:bg-muted hover:no-underline",
-                  )}
-                >
-                  <div>
-                    <item.icon className={cn(" h-5 w-5", item.color)} />
-                  </div>
-                  <div
-                    className={cn(
-                      "absolute left-12 text-base duration-200",
-                      !isOpen && className,
-                    )}
-                  >
-                    {item.title}
-                  </div>
-
-                  {isOpen && (
-                    <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
-                  )}
-                </AccordionTrigger>
-                <AccordionContent className="ml-4 mt-2 space-y-2 pb-1">
-                  {item.children?.map((child, index) => (
-                    <Link
-                      key={index}
-                      href={child.href}
-                      onClick={() => {
-                        if (setOpen) setOpen(false);
-                      }}
-                      className={cn(
-                        buttonVariants({ variant: "ghost" }),
-                        "group flex h-12 justify-start gap-x-3",
-                        path === child.href &&
-                          "bg-muted font-bold hover:bg-muted",
-                      )}
-                    >
-                      <child.icon className={cn("h-5 w-5", child.color)} />
-                      <div
-                        className={cn(
-                          "text-sm duration-200",
-                          !isOpen && className,
-                        )}
-                      >
-                        {child.title}
-                      </div>
-                    </Link>
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          ) : (
-            <Link
-              key={item.title}
-              href={item.href}
-              onClick={() => {
-                if (setOpen) setOpen(false);
-              }}
-              className={cn(
-                buttonVariants({ variant: "ghost" }),
-                "group relative flex h-12 justify-start",
-                path === item.href && "bg-muted font-bold hover:bg-muted",
-              )}
-            >
-              <item.icon className={cn("h-5 w-5", item.color)} />
-              <span
-                className={cn(
-                  "absolute left-12 text-base duration-200",
-                  !isOpen && className,
-                )}
-              >
-                {item.title}
-              </span>
-            </Link>
-          ),
-        )}
-
+        {/* DASHBOARD */}
         <Link
-          key={1}
           href={"/"}
           onClick={() => {
             if (setOpen) setOpen(false);
@@ -162,19 +74,18 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
             )}
           >
             Dashboard
-            {/* {item.title} */}
           </span>
         </Link>
 
-        {/* <Accordion
+        {/* CATEGORIES */}
+        <Accordion
           type="single"
           collapsible
           className="space-y-2"
-          key={item.title}
           value={openItem}
           onValueChange={setOpenItem}
         >
-          <AccordionItem value={item.title} className="border-none">
+          <AccordionItem value={"Categories"} className="border-none">
             <AccordionTrigger
               onClick={() => {
                 !isOpen && toggle();
@@ -185,7 +96,7 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
               )}
             >
               <div>
-                <item.icon className={cn(" h-5 w-5", item.color)} />
+                <List className={cn(" h-5 w-5 text-orange-500")} />
               </div>
               <div
                 className={cn(
@@ -193,38 +104,67 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
                   !isOpen && className,
                 )}
               >
-                {item.title}
+                Categories
               </div>
-
               {isOpen && (
                 <ChevronDownIcon className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
               )}
             </AccordionTrigger>
             <AccordionContent className="ml-4 mt-2 space-y-2 pb-1">
-              {item.children?.map((child, index) => (
-                <Link
-                  key={index}
-                  href={child.href}
-                  onClick={() => {
-                    if (setOpen) setOpen(false);
-                  }}
-                  className={cn(
-                    buttonVariants({ variant: "ghost" }),
-                    "group flex h-12 justify-start gap-x-3",
-                    path === child.href && "bg-muted font-bold hover:bg-muted",
-                  )}
-                >
-                  <child.icon className={cn("h-5 w-5", child.color)} />
-                  <div
-                    className={cn("text-sm duration-200", !isOpen && className)}
+              {/* id of the category when using nano id */}
+              {data?.map((item: any, index: number) => {
+                return (
+                  <Link
+                    key={index}
+                    href={`/categories/${index}`}
+                    onClick={() => {
+                      if (setOpen) setOpen(false);
+                    }}
+                    className={cn(
+                      buttonVariants({ variant: "ghost" }),
+                      "group flex h-12 justify-start gap-x-3",
+                      path === `/categories/${index}` &&
+                        "bg-muted font-bold hover:bg-muted",
+                    )}
                   >
-                    {child.title}
-                  </div>
-                </Link>
-              ))}
+                    <ListTodo className={cn("h-5 w-5 text-red-500")} />
+                    <div
+                      className={cn(
+                        "text-sm duration-200",
+                        !isOpen && className,
+                      )}
+                    >
+                      {item.name}
+                    </div>
+                  </Link>
+                );
+              })}
             </AccordionContent>
           </AccordionItem>
-        </Accordion> */}
+        </Accordion>
+
+        <Link
+          href={"/settings"}
+          onClick={() => {
+            if (setOpen) setOpen(false);
+          }}
+          className={cn(
+            buttonVariants({ variant: "ghost" }),
+            "group relative flex h-12 justify-start",
+            path === "/settings" && "bg-muted font-bold hover:bg-muted",
+          )}
+        >
+          <Settings className={cn("h-5 w-5 text-sky-500")} />
+          <span
+            className={cn(
+              "absolute left-12 text-base duration-200",
+              !isOpen && className,
+            )}
+          >
+            Settings
+          </span>
+        </Link>
+        <Toaster />
       </div>
     </nav>
   );

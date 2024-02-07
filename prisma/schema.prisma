@@ -11,18 +11,39 @@ generator client {
 }
 
 model Category {
-  id      Int       @id @default(autoincrement())
-  name    String    @unique
-  product Product[]
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  product   Product[]
 }
 
 model Product {
-  id              Int       @id @default(autoincrement())
-  name            String    @unique
-  company         String
-  quantityInStock Int
-  categoryId      Int?
-  Category        Category? @relation(fields: [categoryId], references: [id])
+  id         Int         @id @default(autoincrement())
+  itemCode   String      @unique
+  company    String
+  quantity   Int
+  categoryId Int
+  Category   Category    @relation(fields: [categoryId], references: [id])
+  IssuedItem IssueItem[]
 
+  // list of all the time the item was issued
   @@index([categoryId])
+}
+
+model IssueItem {
+  id             Int      @id @default(autoincrement())
+  issuedAt       DateTime @default(now())
+  jobCard        String
+  issuedQuantity Int
+  issuedTo       String
+  productId      Int
+  Product        Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+}
+
+model Employee {
+  id          Int    @id @default(autoincrement())
+  displayName String
+  value       String
 }

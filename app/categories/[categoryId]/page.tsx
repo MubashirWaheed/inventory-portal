@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { columns } from "./columns";
 
 import {
@@ -14,8 +14,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
-
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -26,15 +24,39 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { data } from "./constants/data";
-import AddItem from "./components/AddItem";
-import UpdateCategory from "./components/UpdateCategory";
+import useSWR from "swr";
+import { useParams } from "next/navigation";
+import { fetcher } from "@/lib/fetecher";
+import { Button } from "@/components/ui/button";
+import { useEmployees } from "@/hooks/useEmployees";
+import AddItemDialog from "./components/Dialoges/AddItemDialog";
+
+interface CategoryItem {
+  categoryId: number;
+  company: string;
+  id: number;
+  itemCode: string;
+  quantity: number;
+}
 
 const Category = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+
+  const { categoryId } = useParams();
+
+  const { data: categoryData } = useSWR<{ data: CategoryItem[] }>(
+    `/api/categories/${categoryId}`,
+    fetcher,
+  );
+
+  const { data: list } = useSWR("/api/employees", fetcher);
+
+  const { setEmployeeList } = useEmployees();
+
+  const data = useMemo(() => categoryData?.data ?? [], [categoryData]);
 
   const table = useReactTable({
     data,
@@ -55,21 +77,29 @@ const Category = () => {
     },
   });
 
+  useEffect(() => {
+    if (list) {
+      console.log("list of employee ", list);
+      setEmployeeList(list);
+    }
+  }, [list]);
+
   return (
     <div className="w-full  px-8 pb-8 pt-6 ">
       <h2 className="text-3xl font-bold">Oil Filters</h2>
       <div className="flex justify-between items-center py-4">
         <Input
           placeholder="Search item"
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          value={
+            (table.getColumn("itemCode")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("itemCode")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
         <div className="flex gap-3">
-          {/* <UpdateCategory /> */}
-          <AddItem />
+          <AddItemDialog />
         </div>
       </div>
 
@@ -101,7 +131,7 @@ const Category = () => {
                     <TableCell
                       className="cursor-pointer"
                       key={cell.id}
-                      onClick={() => console.log("mf", row.original.id)}
+                      // onClick={() => console.log("mf", row.original.id)}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -124,11 +154,6 @@ const Category = () => {
 
       {/* PAGINATION */}
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-
         <div className="space-x-2">
           <Button
             variant="outline"

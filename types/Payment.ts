@@ -1,7 +1,7 @@
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed" | string;
-  email: string;
+export type Product = {
+  categoryId: number;
   company: string;
+  id: number;
+  itemCode: string;
+  quantity: number;
 };

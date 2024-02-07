@@ -1,4 +1,5 @@
 "use client";
+import { useSWRConfig } from "swr";
 import { Button } from "@/components/ui/button";
 
 import toast, { Toaster } from "react-hot-toast";
@@ -29,7 +30,6 @@ import axios from "axios";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { AxiosError } from "axios";
 
 const formSchema = z.object({
   category: z
@@ -45,8 +45,8 @@ const formSchema = z.object({
 });
 
 const CreateCategoryDialog = () => {
+  const { mutate } = useSWRConfig();
   const [open, setOpen] = useState(false);
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,7 +64,7 @@ const CreateCategoryDialog = () => {
       toast.success("Category created");
       setOpen(false);
       form.reset();
-      router.refresh();
+      mutate("/api/categories");
     } catch (error: any) {
       console.log("error from the backend: ", error);
       toast.error(error?.response?.data);
@@ -100,22 +100,19 @@ const CreateCategoryDialog = () => {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input
-                          disabled={isSubmitting}
-                          type="text"
-                          placeholder="oil-filters"
-                          {...field}
-                        />
+                        <div>
+                          <Input
+                            disabled={isSubmitting}
+                            type="text"
+                            placeholder="oil-filters"
+                            {...field}
+                          />
+                          <FormMessage />
+                        </div>
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
-                {/* {errors && (
-                  <div className="mt-0">
-                    <FormMessage className="mt-0 pt-0"></FormMessage>
-                  </div>
-                )} */}
                 <DialogFooter>
                   <Button
                     disabled={!isValid || isSubmitting}

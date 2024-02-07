@@ -7,7 +7,7 @@ import { formateCategory } from "@/lib/categoryFormatter";
 export async function POST(req: Request) {
   const { userId } = auth();
 
-  if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+  // if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
   const { category } = await req.json();
   const formattedCategory = formateCategory(category);
@@ -34,13 +34,16 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  // return all categories
   try {
-    const categories = await prisma.category.findMany();
+    const categories = await prisma.category.findMany({
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
 
-    console.log("categories from the DB", categories);
     return NextResponse.json(categories, { status: 200 });
   } catch (error) {
-    console.log("somehing went wrong:", error);
+    console.log("ERROR WHILE GETTING CATEGORIES:", error);
+    return new NextResponse("ERROR FETCHING CATEGORIES", { status: 500 });
   }
 }

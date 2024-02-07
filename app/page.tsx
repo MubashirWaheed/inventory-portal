@@ -13,6 +13,8 @@ export default function Home() {
           <CategoryDialog />
         </div>
       </div>
+
+      {/* CARDS */}
       <div className="mt-4 w-full h-full grid sm:grid-cols-2  lg:grid-cols-4 gap-4 ">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -67,31 +69,6 @@ export default function Home() {
             </p>
           </CardContent>
         </Card>
-        {/* <Card className="col-span-1 min-h-36 md:min-h-48">
-          <CardHeader>
-            <CardTitle>Total Skus</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>1200</p>
-          </CardContent>
-        </Card> */}
-        {/* <Card className="col-span-1 min-h-36 md:min-h-48">
-          <CardHeader>
-            <CardTitle>Total Skus</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>1200</p>
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-1 min-h-36 md:min-h-48">
-          <CardHeader>
-            <CardTitle>Search Inventory</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>1200</p>
-          </CardContent>
-        </Card> */}
       </div>
     </div>
   );

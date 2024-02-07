@@ -64,12 +64,12 @@ const Login = () => {
       });
 
       if (result?.status === "complete") {
-        console.log(result);
+        // console.log(result);
         await setActive({ session: result.createdSessionId });
         router.push("/");
         setDisable(false);
       } else {
-        console.log(result);
+        // console.log(result);
       }
     } catch (err: any) {
       setErrorMessage("Wrong credentials");

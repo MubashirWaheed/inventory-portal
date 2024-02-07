@@ -1,23 +1,28 @@
-import { Payment } from "@/types/Payment";
+"use client";
+import { Product } from "@/types/Payment";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import IssueDialog from "./components/IssueDialog";
+import IssueDialog from "./components/Dialoges/IssueDialog";
 import ProductCell from "./components/ProductCell";
+// import AddStock from "./components/Dialoges/AddStockDialog";
+import AddStockDialog from "./components/Dialoges/AddStockDialog";
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Product>[] = [
   {
-    accessorKey: "status",
+    accessorKey: "id",
     header: "Index",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
+    cell: ({ row, table }) =>
+      (table
+        .getSortedRowModel()
+        ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1,
   },
   {
-    accessorKey: "email",
+    accessorKey: "itemCode",
     header: ({ column }) => {
       return (
         <Button
+          className="pl-0.5renm"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
@@ -27,25 +32,19 @@ export const columns: ColumnDef<Payment>[] = [
       );
     },
     cell: ({ row }) => {
-      const data = row.getValue("email") as string;
+      const data = row.getValue("itemCode") as string;
       return <ProductCell data={data} id={row.original.id} />;
     },
   },
 
   {
-    accessorKey: "amount",
+    accessorKey: "quantity",
     header: () => <div className="text-left">In Stock</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-      return <div className="text-left font-medium">25</div>;
+      const quantity = parseFloat(row.getValue("quantity"));
+      return <div className="text-left font-medium">{quantity}</div>;
     },
   },
-
   {
     accessorKey: "company",
     header: () => <div className="text-left">Company</div>,
@@ -56,11 +55,18 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
-    id: "actions",
+    id: "issueDialog",
     enableHiding: false,
     cell: ({ row }) => {
       const payment = row.original;
-      return <IssueDialog />;
+      return <IssueDialog item={row.original} />;
+    },
+  },
+  {
+    id: "addStockDialog",
+    enableHiding: false,
+    cell: ({ row }) => {
+      return <AddStockDialog item={row.original} />;
     },
   },
 ];
