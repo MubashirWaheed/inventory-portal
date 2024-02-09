@@ -25,9 +25,8 @@ model Product {
   categoryId Int
   Category   Category    @relation(fields: [categoryId], references: [id])
   IssuedItem IssueItem[]
-  AddSock    AddSock[]
+  AddStock   AddStock[]
 
-  // list of all the time the item was issued
   @@index([categoryId])
 }
 
@@ -36,14 +35,18 @@ model IssueItem {
   issuedAt       DateTime @default(now())
   jobCard        String
   issuedQuantity Int
-  issuedTo       String
+  issuedToId     Int
   productId      Int
-  Product        Product  @relation(fields: [productId], references: [id])
+
+  Employee Employee @relation(fields: [issuedToId], references: [id]) // Relation to the Employee model
+
+  Product Product @relation(fields: [productId], references: [id])
 
   @@index([productId])
+  @@index([issuedToId])
 }
 
-model AddSock {
+model AddStock {
   id        Int      @id @default(autoincrement())
   addedAt   DateTime @default(now())
   quantity  Int
@@ -54,7 +57,8 @@ model AddSock {
 }
 
 model Employee {
-  id          Int    @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   displayName String
   value       String
+  IssueItem   IssueItem[]
 }

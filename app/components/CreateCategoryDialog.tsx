@@ -59,6 +59,7 @@ const CreateCategoryDialog = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { category } = values;
+
     try {
       await axios.post("/api/categories", { category });
       toast.success("Category created");

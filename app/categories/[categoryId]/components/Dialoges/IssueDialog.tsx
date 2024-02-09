@@ -50,6 +50,7 @@ import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 interface Employee {
+  id: number;
   displayName: string;
   value: string;
 }
@@ -60,7 +61,7 @@ const issueFormSchema = z
     dateOfIssue: z.date(),
     jobCard: z.string().trim(),
     quantity: z.coerce.number().gt(0).max(20).positive(),
-    issuedTo: z.string().min(1).trim(),
+    issuedTo: z.string(),
     linkTo: z.string(),
   })
   .refine((input) => {
@@ -84,6 +85,7 @@ type Product = {
 const IssueDialog = ({ item }: { item: Product }) => {
   const { employeeList } = useEmployees();
   const { mutate } = useSWRConfig();
+  console.log("employeeList: ", employeeList);
 
   const form = useForm({
     resolver: zodResolver(issueFormSchema),
@@ -103,10 +105,11 @@ const IssueDialog = ({ item }: { item: Product }) => {
   const showJobCard = form.watch("linkTo");
 
   const onSubmit = async (values: z.infer<typeof issueFormSchema>) => {
-    values.quantity = -values.quantity;
+    // values.quantity = -values.quantity;
     let operation = "ISSUE_STOCK";
     try {
-      await axios.put(`/api/products/${id}`, { ...values, id, operation });
+      await axios.post(`/api/products/${id}/issue-product`, { ...values, id });
+      // await axios.put(`/api/products/${id}`, { ...values, id, operation });
       mutate(`/api/categories/${categoryId}`);
       setOpen((prev) => false);
       toast.success("Item issued Successfully");
@@ -242,13 +245,13 @@ const IssueDialog = ({ item }: { item: Product }) => {
                           {employeeList &&
                             employeeList.map(
                               (
-                                { displayName, value }: Employee,
+                                { displayName, value, id }: Employee,
                                 index: number,
                               ) => (
                                 <SelectItem
                                   key={index}
                                   className="cursor-pointer"
-                                  value={value}
+                                  value={`${id}`}
                                 >
                                   {displayName}
                                 </SelectItem>

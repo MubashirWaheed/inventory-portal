@@ -30,7 +30,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { invoices } from "../constants/invoices";
+// import { invoices } from "../constants/invoices";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetecher";
 import { addDays, format, getMonth, startOfMonth } from "date-fns";
@@ -53,6 +53,7 @@ const Product = () => {
     `/api/issueItem/${productId}?from=${date?.from}&to=${date?.to}`,
     fetcher,
   );
+
   console.log("data from the issueItem API ", data);
 
   return (
@@ -90,30 +91,35 @@ const Product = () => {
       </Card>
 
       <div>
-        {/* <Table>
+        <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[200px]">Date</TableHead>
               <TableHead>Person</TableHead>
               <TableHead>Job Card</TableHead>
-              <TableHead>Car Number</TableHead>
               <TableHead>Quantity</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentInvoices.map((invoice) => (
-              <TableRow key={invoice.invoice}>
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMethod}</TableCell>
-                <TableCell className="">{invoice.totalAmount}</TableCell>
-                <TableCell className="text-left ml-4">
-                  {invoice.quantity}
-                </TableCell>
-              </TableRow>
-            ))}
+            {data?.data?.map((item: any, index: number) => {
+              const parsedDate = format(item.issuedAt, "do MMMM yyyy");
+              const parsedTime = format(item.issuedAt, "h:mm aa");
+
+              return (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">
+                    {parsedDate}
+                    <br />
+                    {parsedTime}
+                  </TableCell>
+                  <TableCell>{item.Employee.displayName}</TableCell>
+                  <TableCell>{item.jobCard}</TableCell>
+                  <TableCell>{item.issuedQuantity}</TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
-        </Table> */}
+        </Table>
       </div>
 
       {/* <Pagination>

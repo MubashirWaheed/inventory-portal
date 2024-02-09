@@ -31,7 +31,7 @@ export default function Sidebar({ className }: SidebarProps) {
         className,
       )}
     >
-      <div className="h-full ">
+      <div className="h-full">
         <div className="px-3 py-2">
           <div className="mt-3 space-y-1">
             <SideNav

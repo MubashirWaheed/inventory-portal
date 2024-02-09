@@ -5,14 +5,24 @@ import CategoryDialog from "./components/CreateCategoryDialog";
 import { startOfMonth } from "date-fns";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetecher";
 
 export default function Home() {
   const currentDate = new Date();
   const firstDayOfMonth = startOfMonth(currentDate);
+
   const [date, setDate] = useState<DateRange | undefined>({
     from: firstDayOfMonth,
     to: new Date(),
   });
+
+  const { data } = useSWR(
+    `/api/products?from=${date?.from}&to=${date?.to}`,
+    fetcher,
+  );
+  console.log("data: ", data);
+
   return (
     <div className="px-8 pt-6 pb-8">
       <div className="flex flex-col lg:flex-row justify-between">

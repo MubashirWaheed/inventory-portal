@@ -4,10 +4,27 @@ import { prisma } from "@/db/db";
 import { Prisma } from "@prisma/client";
 import { formateCategory } from "@/lib/categoryFormatter";
 
+// GET ALL CATEGORIES
+export async function GET(req: Request) {
+  try {
+    const categories = await prisma.category.findMany({
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+
+    return NextResponse.json(categories, { status: 200 });
+  } catch (error) {
+    console.log("ERROR WHILE GETTING CATEGORIES:", error);
+    return new NextResponse("ERROR FETCHING CATEGORIES", { status: 500 });
+  }
+}
+
+// CREATE CATEGORY
 export async function POST(req: Request) {
   const { userId } = auth();
 
-  // if (!userId) return new NextResponse("Unauthorized", { status: 401 });
+  if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
   const { category } = await req.json();
   const formattedCategory = formateCategory(category);
@@ -30,20 +47,5 @@ export async function POST(req: Request) {
     }
 
     return new NextResponse("INTERNAL ERROR", { status: 500 });
-  }
-}
-
-export async function GET(req: Request) {
-  try {
-    const categories = await prisma.category.findMany({
-      orderBy: {
-        createdAt: "asc",
-      },
-    });
-
-    return NextResponse.json(categories, { status: 200 });
-  } catch (error) {
-    console.log("ERROR WHILE GETTING CATEGORIES:", error);
-    return new NextResponse("ERROR FETCHING CATEGORIES", { status: 500 });
   }
 }

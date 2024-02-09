@@ -9,6 +9,12 @@ export async function GET(
   let from = req.nextUrl.searchParams.get("from");
   let to = req.nextUrl.searchParams.get("to");
 
+  let fromDate, toDate;
+  if (from !== null && to !== null) {
+    fromDate = new Date(from);
+    toDate = new Date(to);
+  }
+
   console.log("FROM:", from, "TO: ", to);
 
   const { productId } = params;
@@ -20,9 +26,16 @@ export async function GET(
   const data = await prisma.issueItem.findMany({
     where: {
       productId: parsedProductId,
+      issuedAt: {
+        gte: fromDate,
+        lte: toDate,
+      },
     },
     orderBy: {
       issuedAt: "desc",
+    },
+    include: {
+      Employee: true,
     },
   });
 

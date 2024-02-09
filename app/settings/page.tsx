@@ -18,30 +18,52 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
-// write schema for the employees form
+// SCHEMA
+const formSchema = z.object({
+  employeeName: z.string().min(3).max(40),
+});
 
 const Settings = () => {
-  const form = useForm({
+  const [open, setOpen] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       employeeName: "",
     },
   });
 
-  const [open, setOpen] = useState(false);
+  const { isValid, isSubmitting, isSubmitted, errors } = form.formState;
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log("values: ", values);
     try {
-      const res = await axios.post("/api/employees", values);
+      await axios.post("/api/employees", values);
+      form.reset();
+      toast.success("Person Addded Successfully", {
+        style: {
+          fontSize: "16px",
+        },
+        className: "class",
+      });
+      // setOpen((prev) => false);
     } catch (error) {
+      toast.error("Something went wrong", {
+        style: {
+          fontSize: "16px",
+        },
+        className: "class",
+      });
       console.log("error: ", error);
     }
-    console.log("submitted");
   };
 
   return (
@@ -71,21 +93,28 @@ const Settings = () => {
                       Name
                     </FormLabel>
                     <FormControl className="col-span-3">
-                      <Input type="text" placeholder="A1248f8g" {...field} />
+                      <div>
+                        <Input type="text" placeholder="A1248f8g" {...field} />
+                        <FormMessage className="mt-1" />
+                      </div>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
 
               <DialogFooter>
-                <Button className="mt-4" type="submit">
+                <Button
+                  disabled={!isValid || isSubmitting}
+                  className="mt-4"
+                  type="submit"
+                >
                   Add
                 </Button>
               </DialogFooter>
             </form>
           </Form>
         </DialogContent>
+        <Toaster className="text-center" position="top-center" richColors />
       </Dialog>
     </div>
   );

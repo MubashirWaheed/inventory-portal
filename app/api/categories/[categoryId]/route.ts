@@ -3,6 +3,24 @@ import { auth } from "@clerk/nextjs";
 import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
+// GET ALL THE PRODCUTS FOR PARTICULAR CATEGORY
+export async function GET(
+  req: Request,
+  { params }: { params: { categoryId: string } },
+) {
+  const { categoryId } = params;
+
+  const parsedCategoryId = parseInt(categoryId);
+
+  const products = await prisma.product.findMany({
+    where: {
+      categoryId: parsedCategoryId,
+    },
+  });
+
+  return NextResponse.json({ data: products });
+}
+
 // CRAETE PRODUCT FOR SPECIFIC CATEGORY
 export async function POST(
   req: Request,
@@ -15,7 +33,8 @@ export async function POST(
   const { itemCode, company, quantity } = await req.json();
 
   const { categoryId } = params;
-  const parsedCategoryId = parseInt(categoryId, 10);
+  const parsedCategoryId = parseInt(categoryId);
+  console.log("parsedCategoryId: ", parsedCategoryId, typeof parsedCategoryId);
 
   const parsedQuantity = parseInt(quantity, 10);
 
@@ -41,24 +60,6 @@ export async function POST(
     console.log("ERROR CREATING PRODUCT", error);
     return new NextResponse("ERROR FETCHING Products", { status: 500 });
   }
-}
-
-// GET ALL THE PRODCUTS FOR PARTICULAR CATEGORY
-export async function GET(
-  req: Request,
-  { params }: { params: { categoryId: string } },
-) {
-  const { categoryId } = params;
-
-  const parsedCategoryId = parseInt(categoryId, 10);
-
-  const products = await prisma.product.findMany({
-    where: {
-      categoryId: parsedCategoryId,
-    },
-  });
-
-  return NextResponse.json({ data: products });
 }
 
 // UPDATE PRODUCT QUANTITY FOR

@@ -43,7 +43,7 @@ const formSchema = z.object({
 
 const AddStockDialog = ({ item }: { item: Product }) => {
   const { mutate } = useSWRConfig();
-  const { itemCode, id, categoryId, quantity } = item;
+  const { itemCode, id: productId, categoryId, quantity } = item;
 
   console.log("item: ", item);
   const [open, setOpen] = useState(false);
@@ -60,7 +60,11 @@ const AddStockDialog = ({ item }: { item: Product }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     let operation = "ADD_STOCK";
     try {
-      await axios.put(`/api/products/${id}`, { ...values, id, operation });
+      await axios.post(`/api/products/${productId}/add-stock`, {
+        ...values,
+        productId,
+      });
+      // await axios.put(`/api/products/${id}`, { ...values, id, operation });
       mutate(`/api/categories/${categoryId}`);
       form.reset();
       toast.success("Restocked Successfully", {

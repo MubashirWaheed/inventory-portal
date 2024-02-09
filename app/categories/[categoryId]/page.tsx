@@ -79,7 +79,6 @@ const Category = () => {
 
   useEffect(() => {
     if (list) {
-      console.log("list of employee ", list);
       setEmployeeList(list);
     }
   }, [list]);
@@ -88,6 +87,7 @@ const Category = () => {
     <div className="w-full  px-8 pb-8 pt-6 ">
       <h2 className="text-3xl font-bold">Oil Filters</h2>
       <div className="flex justify-between items-center py-4">
+        {/* CATEGORY SEARCH INPUT */}
         <Input
           placeholder="Search item"
           value={
@@ -128,11 +128,7 @@ const Category = () => {
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
                   return (
-                    <TableCell
-                      className="cursor-pointer"
-                      key={cell.id}
-                      // onClick={() => console.log("mf", row.original.id)}
-                    >
+                    <TableCell className="cursor-pointer" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
