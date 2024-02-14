@@ -58,13 +58,10 @@ const AddStockDialog = ({ item }: { item: Product }) => {
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    let operation = "ADD_STOCK";
     try {
       await axios.post(`/api/products/${productId}/add-stock`, {
         ...values,
-        productId,
       });
-      // await axios.put(`/api/products/${id}`, { ...values, id, operation });
       mutate(`/api/categories/${categoryId}`);
       form.reset();
       toast.success("Restocked Successfully", {

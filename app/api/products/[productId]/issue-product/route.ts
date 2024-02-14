@@ -1,5 +1,8 @@
 // ISSUE ITEM
 import { prisma } from "@/db/db";
+import { currentUtcDate } from "@/lib/currentUtcDate";
+import { updateDailyStockQuntity } from "@/lib/updateDailyStockQuantity";
+import { updateTotalStockCount } from "@/lib/updateTotalStockCount";
 import { auth } from "@clerk/nextjs";
 import { Console } from "console";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,7 +24,6 @@ export async function POST(req: NextRequest) {
     dateOfIssue,
   } = request;
 
-  console.log("ISSUED TO ", issuedTo);
   try {
     const product = await prisma.product.findUnique({
       where: {
@@ -43,19 +45,20 @@ export async function POST(req: NextRequest) {
 
     let newQuantity = Math.max(0, product.quantity - issueQuantity);
 
-    const [productUpdated, issueItem] = await prisma.$transaction([
-      // UPDATING THE QUANTITY OF PRODUCT
-      prisma.product.update({
+    const currentDate = currentUtcDate();
+    let operation = "subtract";
+
+    await prisma.$transaction(async (tx) => {
+      await tx.product.update({
         where: {
           id,
         },
         data: {
           quantity: newQuantity,
         },
-      }),
+      });
 
-      // CREATING ISSUE ROW
-      prisma.issueItem.create({
+      await tx.issueItem.create({
         data: {
           productId: id,
           issuedToId: parseInt(issuedTo),
@@ -63,11 +66,20 @@ export async function POST(req: NextRequest) {
           issuedAt: dateOfIssue,
           jobCard,
         },
-      }),
-    ]);
+      });
+
+      await updateTotalStockCount(issueQuantity, currentDate, operation, tx);
+      await updateDailyStockQuntity(
+        currentDate,
+        id,
+        issueQuantity,
+        operation,
+        tx,
+      );
+    });
 
     return NextResponse.json("Issued item successfully", { status: 201 });
   } catch (error) {
-    return new NextResponse("error adding stock", { status: 401 });
+    return new NextResponse("Error issuing item", { status: 401 });
   }
 }

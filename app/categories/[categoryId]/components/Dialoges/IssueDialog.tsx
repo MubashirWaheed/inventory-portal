@@ -1,4 +1,4 @@
-import useSWR, { useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,7 +22,6 @@ import { format } from "date-fns";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -41,11 +40,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 
-import { Switch } from "@/components/ui/switch";
-
-import { Label } from "@/components/ui/label";
 import axios from "axios";
-import { fetcher } from "@/lib/fetecher";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -55,25 +50,6 @@ interface Employee {
   value: string;
 }
 
-// APPLY DATA VALIDATION FOR JOB CARD
-const issueFormSchema = z
-  .object({
-    dateOfIssue: z.date(),
-    jobCard: z.string().trim(),
-    quantity: z.coerce.number().gt(0).max(20).positive(),
-    issuedTo: z.string(),
-    linkTo: z.string(),
-  })
-  .refine((input) => {
-    console.log("input.linkTo: ", input.linkTo);
-    if (input.linkTo !== "garage" && input.jobCard == "") {
-      // If linkTo is "garage", jobCard can be optional
-      return false;
-    }
-    return true;
-    // return input.jobCard !== undefined;
-  });
-
 type Product = {
   id: number;
   itemCode: string;
@@ -81,6 +57,23 @@ type Product = {
   quantity: number;
   categoryId: number;
 };
+
+// APPLY DATA VALIDATION FOR JOB CARD
+const issueFormSchema = z
+  .object({
+    dateOfIssue: z.date(),
+    jobCard: z.string().trim(),
+    quantity: z.coerce.number().gt(0).max(20).positive(),
+    issuedTo: z.string().min(1, { message: "please select person" }),
+    linkTo: z.string(),
+  })
+  .refine((input) => {
+    console.log("input.linkTo: ", input.linkTo);
+    if (input.linkTo !== "garage" && input.jobCard == "") {
+      return false;
+    }
+    return true;
+  });
 
 const IssueDialog = ({ item }: { item: Product }) => {
   const { employeeList } = useEmployees();
@@ -105,11 +98,9 @@ const IssueDialog = ({ item }: { item: Product }) => {
   const showJobCard = form.watch("linkTo");
 
   const onSubmit = async (values: z.infer<typeof issueFormSchema>) => {
-    // values.quantity = -values.quantity;
-    let operation = "ISSUE_STOCK";
+    console.log("VALUES: ", values);
     try {
       await axios.post(`/api/products/${id}/issue-product`, { ...values, id });
-      // await axios.put(`/api/products/${id}`, { ...values, id, operation });
       mutate(`/api/categories/${categoryId}`);
       setOpen((prev) => false);
       toast.success("Item issued Successfully");

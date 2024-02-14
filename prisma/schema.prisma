@@ -1,5 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
@@ -18,18 +19,20 @@ model Category {
 }
 
 model Product {
-  id         Int         @id @default(autoincrement())
-  itemCode   String      @unique
-  company    String
-  quantity   Int
-  categoryId Int
-  Category   Category    @relation(fields: [categoryId], references: [id])
-  IssuedItem IssueItem[]
-  AddStock   AddStock[]
+  id                 Int                  @id @default(autoincrement())
+  itemCode           String               @unique
+  company            String
+  quantity           Int
+  categoryId         Int
+  Category           Category             @relation(fields: [categoryId], references: [id])
+  IssuedItem         IssueItem[]
+  AddStock           AddStock[]
+  DailyStockQuantity DailyStockQuantity[]
 
   @@index([categoryId])
 }
 
+// TRACKS WHICH ITEM WAS ISSUED TO WHICH PERSON AT WHICH DATE
 model IssueItem {
   id             Int      @id @default(autoincrement())
   issuedAt       DateTime @default(now())
@@ -46,6 +49,10 @@ model IssueItem {
   @@index([issuedToId])
 }
 
+// FOR PARTICULAR ITEM ADDITION OVER TIME 
+// EG 20 SKUS OF PRODUCT WERE ADDED IN STOCK AT CERTAIN DAY
+// DOESN"T TRACK THE WHOLE QUANTITY OF PRODUCT AT CERATIAN DATE
+
 model AddStock {
   id        Int      @id @default(autoincrement())
   addedAt   DateTime @default(now())
@@ -54,6 +61,24 @@ model AddStock {
   Product   Product  @relation(fields: [productId], references: [id])
 
   @@index([productId])
+}
+
+// EXACT TOTAL QUANTITY OF PRODUCTS IN THE STOCK
+model TotalStockCount {
+  id              Int      @id @default(autoincrement())
+  date            DateTime @db.Date
+  totalStockCount Int
+}
+
+// EXACT QUANITY OF PRODUCT AT CERTAIN DAY
+model DailyStockQuantity {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  quantity  Int
+  productId Int
+  Product   Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId, date], name: "unique_product_date")
 }
 
 model Employee {

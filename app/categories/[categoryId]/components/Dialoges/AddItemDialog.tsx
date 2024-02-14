@@ -26,6 +26,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useParams, usePathname } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { mutate, useSWRConfig } from "swr";
+import { startOfDay } from "date-fns";
 
 const formSchema = z.object({
   itemCode: z
@@ -67,12 +68,13 @@ const AddItemDialog = () => {
 
   const onsubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/categories/${categoryId}`, values);
+      await axios.post(`/api/products/add-product?categoryId=${categoryId}`, {
+        ...values,
+      });
       toast.success("Item Added Successfully");
       mutate(`/api/categories/${categoryId}`);
       setOpen(false);
       form.reset();
-      // mutate the data on success
     } catch (error: any) {
       console.log("error adding item: ", error);
       toast.error(error?.response?.data);
@@ -145,7 +147,6 @@ const AddItemDialog = () => {
               )}
             />
             <DialogFooter>
-              {/* disable the button whne the item is being added */}
               <Button
                 disabled={!isValid || isSubmitting}
                 className="mt-4"

@@ -9,6 +9,7 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/fetecher";
 
 export default function Home() {
+  // Hook that fetches the opening closing month stock
   const currentDate = new Date();
   const firstDayOfMonth = startOfMonth(currentDate);
 
@@ -17,11 +18,38 @@ export default function Home() {
     to: new Date(),
   });
 
-  const { data } = useSWR(
-    `/api/products?from=${date?.from}&to=${date?.to}`,
+  // const lastMonthDate = new Date();
+  // lastMonthDate.setUTCHours(0, 0, 0, 0);
+  const { data } = useSWR("/api/dashboard/opening-stock", fetcher);
+  console.log("data: ", data);
+
+  const { data: currentStockRecord } = useSWR(
+    "/api/dashboard/current-stock",
     fetcher,
   );
-  console.log("data: ", data);
+
+  const { data: addedStock } = useSWR(
+    `/api/dashboard/items-added?from=${date?.from}&to=${date?.to}`,
+    fetcher,
+  );
+
+  const { data: issuedItem } = useSWR(
+    `/api/dashboard/issued-item?from=${date?.from}&to=${date?.to}`,
+    fetcher,
+  );
+  console.log("issuedItem: ", issuedItem);
+  console.log("addedStock: ", addedStock);
+  console.log(data);
+  console.log("currentStockRecord: ", currentStockRecord);
+
+  // console.log("lastMonthDate: ", lastMonthDate);
+  // const startOfMonthCount = "";
+  // const { data: startOfMonthCount } = useSWR(
+  //   `/api/dashboard/stock-count?date=${lastMonthDate}`,
+  //   fetcher,
+  // );
+  // `/api/products?from=${date?.from}&to=${date?.to}`,
+  // console.log("TEST: ", startOfMonthCount);
 
   return (
     <div className="px-8 pt-6 pb-8">
@@ -42,7 +70,7 @@ export default function Home() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">1230</div>
+            <div className="text-3xl font-bold">{data?.totalStockCount}</div>
             <p className="text-sm text-muted-foreground">
               stock at the start of January
             </p>
@@ -55,7 +83,9 @@ export default function Home() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">1160</div>
+            <div className="text-3xl font-bold">
+              {currentStockRecord && currentStockRecord[0]?.totalStockCount}
+            </div>
             <p className="text-sm text-muted-foreground">
               Number of item in the inventory
             </p>
@@ -69,7 +99,9 @@ export default function Home() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">230</div>
+            <div className="text-3xl font-bold">
+              {addedStock?._sum?.quantity}
+            </div>
             <p className="text-sm text-muted-foreground">
               in the month of January
             </p>
@@ -82,7 +114,9 @@ export default function Home() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">130</div>
+            <div className="text-3xl font-bold">
+              {issuedItem?._sum?.issuedQuantity}
+            </div>
             <p className="text-sm text-muted-foreground">
               in the month of January
             </p>

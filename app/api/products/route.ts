@@ -3,6 +3,10 @@ import { subMonths } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
 import { format } from "path";
 
+import { auth } from "@clerk/nextjs";
+import { Prisma } from "@prisma/client";
+import { addDays } from "date-fns";
+
 export async function GET(req: NextRequest) {
   const currentDate = new Date();
   console.log("currentDate: ", currentDate);
