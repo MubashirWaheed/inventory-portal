@@ -102,7 +102,8 @@ const IssueDialog = ({ item }: { item: Product }) => {
     try {
       await axios.post(`/api/products/${id}/issue-product`, { ...values, id });
       mutate(`/api/categories/${categoryId}`);
-      mutate(`/api/dashbaord/current-stock`);
+      mutate(`/api/dashboard/current-stock`);
+
       setOpen((prev) => false);
       toast.success("Item issued Successfully");
     } catch (error) {
