@@ -95,6 +95,7 @@ const IssueDialog = ({ item }: { item: Product }) => {
 
   const { itemCode, id, categoryId, quantity } = item;
   const [open, setOpen] = useState(false);
+
   const showJobCard = form.watch("linkTo");
 
   const onSubmit = async (values: z.infer<typeof issueFormSchema>) => {

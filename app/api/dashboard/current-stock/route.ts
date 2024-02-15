@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
     },
     take: 1,
   });
+  console.log("currentCountRecord: ", currentCountRecord);
 
   return NextResponse.json(currentCountRecord, { status: 200 });
 }

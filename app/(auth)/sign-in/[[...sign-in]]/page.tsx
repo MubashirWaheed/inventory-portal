@@ -46,11 +46,12 @@ const Login = () => {
     },
   });
 
+  const { isSubmitting, isValid } = form.formState;
+
   const clearErrorMessage = () => {
     setErrorMessage(null);
   };
 
-  // values: z.infer<typeof formSchema>
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!isLoaded) return;
 
@@ -131,7 +132,7 @@ const Login = () => {
                 </div>
               )}
               <div className="flex justify-center">
-                <Button disabled={disable} type="submit">
+                <Button disabled={!isValid || isSubmitting} type="submit">
                   Submit
                 </Button>
               </div>
