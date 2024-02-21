@@ -11,7 +11,7 @@ export async function updateTotalStockCount(
     orderBy: {
       date: "desc",
     },
-    take: 2,
+    take: 1,
   });
 
   const mostRecentRecord = existingRecords[0];
@@ -21,14 +21,14 @@ export async function updateTotalStockCount(
     await tx.totalStockCount.create({
       data: {
         date: currentDate,
+
         totalStockCount: quantity,
       },
     });
     return; // Exit function
   }
 
-  const isNewRecordNeeded =
-    mostRecentRecord.date.toDateString() !== currentDate.toDateString();
+  const isNewRecordNeeded = mostRecentRecord.date !== currentDate;
 
   let updatedTotalStockCount = 0;
 
@@ -37,23 +37,13 @@ export async function updateTotalStockCount(
   } else if (operation === "subtract") {
     updatedTotalStockCount = mostRecentRecord.totalStockCount - quantity;
   }
-
-  if (isNewRecordNeeded) {
-    await tx.totalStockCount.create({
-      data: {
-        date: currentDate,
-        totalStockCount: updatedTotalStockCount,
-      },
-    });
-  } else {
-    await tx.totalStockCount.update({
-      where: {
-        id: mostRecentRecord.id,
-      },
-      data: {
-        date: currentDate,
-        totalStockCount: updatedTotalStockCount,
-      },
-    });
-  }
+  await tx.totalStockCount.update({
+    where: {
+      id: mostRecentRecord.id,
+    },
+    data: {
+      date: currentDate,
+      totalStockCount: updatedTotalStockCount,
+    },
+  });
 }

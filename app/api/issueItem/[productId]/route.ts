@@ -9,11 +9,12 @@ export async function GET(
   let from = req.nextUrl.searchParams.get("from");
   let to = req.nextUrl.searchParams.get("to");
 
+  console.log("FROM:", from, "TO:", to);
   let fromDate, toDate;
-  if (from !== null && to !== null) {
-    fromDate = new Date(from);
-    toDate = new Date(to);
-  }
+  // if (from !== null && to !== null) {
+  //   fromDate = new Date(from);
+  //   toDate = new Date(to);
+  // }
 
   console.log("FROM:", from, "TO: ", to);
 

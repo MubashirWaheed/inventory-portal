@@ -46,6 +46,7 @@ export async function POST(
       // Create Added Stock Product Transaction
       await tx.addStock.create({
         data: {
+          addedAt: currentDate,
           quantity: addedStock,
           productId: parsedId,
         },

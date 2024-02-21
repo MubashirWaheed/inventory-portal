@@ -2,24 +2,30 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePickerWithRange } from "@/components/ui/daterangepicker";
 import CategoryDialog from "./components/CreateCategoryDialog";
-import { startOfMonth } from "date-fns";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
+import { format, getMonth, startOfMonth } from "date-fns";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetecher";
+import Link from "next/link";
+import CardSkeleton from "@/components/CardSkeleton";
+import useDashboardTimeFrame from "@/hooks/useDashboardTimeFrame";
+// import DashboardCards from 'first'
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DashboardCards from "./components/DashboardCards";
+import SearchPerson from "./components/SearchPerson";
+import SearchJobCard from "./components/SearchJobCard";
+import { useEffect } from "react";
 
 export default function Home() {
   // Hook that fetches the opening closing month stock
   const currentDate = new Date();
-  const firstDayOfMonth = startOfMonth(currentDate);
+  const { date, setDate } = useDashboardTimeFrame();
+  console.log("CURRENT DATE FRO THE SELECT: ", date);
 
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: firstDayOfMonth,
-    to: new Date(),
-  });
+  const currentMonth = format(currentDate, "MMMM");
 
-  // const lastMonthDate = new Date();
-  // lastMonthDate.setUTCHours(0, 0, 0, 0);
+  console.log("DATE IN TEH FRONTEND", date);
+
   const { data } = useSWR("/api/dashboard/opening-stock", fetcher);
   console.log("data: ", data);
 
@@ -29,99 +35,81 @@ export default function Home() {
   );
 
   const { data: addedStock } = useSWR(
-    `/api/dashboard/items-added?from=${date?.from}&to=${date?.to}`,
+    `/api/dashboard/items-added-sum?from=${date?.from}&to=${date?.to}`,
     fetcher,
   );
 
   const { data: issuedItem } = useSWR(
-    `/api/dashboard/issued-item?from=${date?.from}&to=${date?.to}`,
+    `/api/dashboard/issued-item-sum?from=${date?.from}&to=${date?.to}`,
     fetcher,
   );
+
+  console.log(
+    "data, currentStockRecord, addedStock, issuedItem: ",
+    data,
+    currentStockRecord,
+    addedStock,
+    issuedItem,
+  );
+  // const isLoading =
+  //   !data ||
+  //   !currentStockRecord ||
+  //   !addedStock ||
+  //   !issuedItem ||
+  //   // dataError ||
+  //   // currentStockError ||
+  //   // addedStockError ||
+  //   // issuedItemError;
+
   console.log("issuedItem: ", issuedItem);
   console.log("addedStock: ", addedStock);
+
   console.log(data);
   console.log("currentStockRecord: ", currentStockRecord);
 
-  // console.log("lastMonthDate: ", lastMonthDate);
-  // const startOfMonthCount = "";
-  // const { data: startOfMonthCount } = useSWR(
-  //   `/api/dashboard/stock-count?date=${lastMonthDate}`,
-  //   fetcher,
-  // );
-  // `/api/products?from=${date?.from}&to=${date?.to}`,
-  // console.log("TEST: ", startOfMonthCount);
-
+  useEffect(() => {
+    console.log("addedStock: ", addedStock);
+  }, [addedStock]);
   return (
     <div className="px-8 pt-6 pb-8">
       <div className="flex flex-col lg:flex-row justify-between">
         <h2 className=" font-bold text-3xl tracking-tight">Dashboard</h2>
         <div className="flex justify-center flex-col sm:flex-row items-center gap-4">
-          <DatePickerWithRange date={date} setDate={setDate} />
+          {
+            // @ts-ignore
+            <DatePickerWithRange date={date} setDate={setDate} />
+          }
           <CategoryDialog />
         </div>
       </div>
-
-      {/* CARDS */}
-      <div className="mt-4 w-full h-full grid sm:grid-cols-2  lg:grid-cols-4 gap-4 ">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-base font-medium">
-              Opening Stock
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{data?.totalStockCount}</div>
-            <p className="text-sm text-muted-foreground">
-              stock at the start of January
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-base font-medium">
-              Current Stock
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {currentStockRecord && currentStockRecord[0]?.totalStockCount}
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Number of item in the inventory
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-base font-medium">
-              Stock Bought
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {addedStock?._sum?.quantity}
-            </div>
-            <p className="text-sm text-muted-foreground">
-              in the month of January
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-base font-medium">
-              Items Issued
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {issuedItem?._sum?.issuedQuantity}
-            </div>
-            <p className="text-sm text-muted-foreground">
-              in the month of January
-            </p>
-          </CardContent>
-        </Card>
+      <div>
+        {/* Tab */}
+        <Tabs className="mt-2" defaultValue="overview">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="searchJobCard">Search JobCard</TabsTrigger>
+            <TabsTrigger value="searchPerson">Search Person</TabsTrigger>
+          </TabsList>
+          <TabsContent value="overview">
+            {/* {isLoading ? (
+              <CardSkeleton />
+            ) : ( */}
+            <DashboardCards
+              addedStock={addedStock}
+              data={data}
+              currentStockRecord={currentStockRecord}
+              issuedItem={issuedItem}
+              currentMonth={currentMonth}
+            />
+            {/* )} */}
+          </TabsContent>
+          <TabsContent value="searchJobCard">
+            <SearchJobCard />
+          </TabsContent>
+          <TabsContent value="searchPerson">
+            <SearchPerson />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

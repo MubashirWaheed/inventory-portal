@@ -14,17 +14,18 @@ generator client {
 model Category {
   id        Int       @id @default(autoincrement())
   name      String    @unique
-  createdAt DateTime  @default(now())
+  createdAt DateTime  @db.Date
   product   Product[]
 }
 
 model Product {
   id                 Int                  @id @default(autoincrement())
+  createdAt          DateTime             @db.Date
   itemCode           String               @unique
   company            String
   quantity           Int
   categoryId         Int
-  Category           Category             @relation(fields: [categoryId], references: [id])
+  Category           Category?            @relation(fields: [categoryId], references: [id])
   IssuedItem         IssueItem[]
   AddStock           AddStock[]
   DailyStockQuantity DailyStockQuantity[]
@@ -35,7 +36,7 @@ model Product {
 // TRACKS WHICH ITEM WAS ISSUED TO WHICH PERSON AT WHICH DATE
 model IssueItem {
   id             Int      @id @default(autoincrement())
-  issuedAt       DateTime @default(now())
+  issuedAt       DateTime @db.Date
   jobCard        String
   issuedQuantity Int
   issuedToId     Int
@@ -55,7 +56,7 @@ model IssueItem {
 
 model AddStock {
   id        Int      @id @default(autoincrement())
-  addedAt   DateTime @default(now())
+  addedAt   DateTime @db.Date
   quantity  Int
   productId Int
   Product   Product  @relation(fields: [productId], references: [id])
@@ -73,7 +74,7 @@ model TotalStockCount {
 // EXACT QUANITY OF PRODUCT AT CERTAIN DAY
 model DailyStockQuantity {
   id        Int      @id @default(autoincrement())
-  date      DateTime
+  date      DateTime @db.Date
   quantity  Int
   productId Int
   Product   Product  @relation(fields: [productId], references: [id])

@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { format } from "date-fns";
+import { addDays, format, isToday, startOfToday } from "date-fns";
 import {
   Form,
   FormControl,
@@ -43,6 +43,8 @@ import { cn } from "@/lib/utils";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { convertToUtcDate } from "@/lib/convertToUTCDate";
+import { currentUtcDate } from "@/lib/currentUtcDate";
 
 interface Employee {
   id: number;
@@ -58,7 +60,6 @@ type Product = {
   categoryId: number;
 };
 
-// APPLY DATA VALIDATION FOR JOB CARD
 const issueFormSchema = z
   .object({
     dateOfIssue: z.date(),
@@ -78,7 +79,6 @@ const issueFormSchema = z
 const IssueDialog = ({ item }: { item: Product }) => {
   const { employeeList } = useEmployees();
   const { mutate } = useSWRConfig();
-  console.log("employeeList: ", employeeList);
 
   const form = useForm({
     resolver: zodResolver(issueFormSchema),
@@ -98,8 +98,16 @@ const IssueDialog = ({ item }: { item: Product }) => {
 
   const showJobCard = form.watch("linkTo");
 
+  const formatDate = (date: any) => {
+    if (!isToday(date)) {
+      return addDays(date, 1);
+    }
+    return date;
+  };
+
   const onSubmit = async (values: z.infer<typeof issueFormSchema>) => {
-    console.log("VALUES: ", values);
+    values.dateOfIssue = formatDate(values.dateOfIssue);
+
     try {
       await axios.post(`/api/products/${id}/issue-product`, { ...values, id });
       mutate(`/api/categories/${categoryId}`);
@@ -108,7 +116,6 @@ const IssueDialog = ({ item }: { item: Product }) => {
       setOpen((prev) => false);
       toast.success("Item issued Successfully");
     } catch (error) {
-      console.log("error:", error);
       // @ts-ignore
       toast.error(error?.response?.data);
     }
@@ -292,9 +299,9 @@ const IssueDialog = ({ item }: { item: Product }) => {
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
-                            }
+                            // disabled={(date) =>
+                            //   date > new Date() || date < new Date("1900-01-01")
+                            // }
                             initialFocus
                           />
                         </PopoverContent>

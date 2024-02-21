@@ -20,6 +20,5 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  //   console.log("RECORD: ", sumResult);
   return NextResponse.json(sumResult, { status: 200 });
 }

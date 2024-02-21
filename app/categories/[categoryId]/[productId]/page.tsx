@@ -102,15 +102,15 @@ const Product = () => {
           </TableHeader>
           <TableBody>
             {data?.data?.map((item: any, index: number) => {
+              // convert date to local time
               const parsedDate = format(item.issuedAt, "do MMMM yyyy");
-              const parsedTime = format(item.issuedAt, "h:mm aa");
 
               return (
                 <TableRow key={index}>
                   <TableCell className="font-medium">
                     {parsedDate}
-                    <br />
-                    {parsedTime}
+                    {/* <br /> */}
+                    {/* {parsedTime} */}
                   </TableCell>
                   <TableCell>{item.Employee.displayName}</TableCell>
                   <TableCell>{item.jobCard}</TableCell>

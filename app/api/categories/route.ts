@@ -28,11 +28,13 @@ export async function POST(req: Request) {
 
   const { category } = await req.json();
   const formattedCategory = formateCategory(category);
+  console.log("formattedCategory: ", formattedCategory);
 
   try {
     const newCategory = await prisma.category.create({
       data: {
         name: formattedCategory,
+        createdAt: new Date(),
       },
     });
     return NextResponse.json(newCategory);
@@ -48,4 +50,5 @@ export async function POST(req: Request) {
 
     return new NextResponse("INTERNAL ERROR", { status: 500 });
   }
+  return NextResponse.json("good");
 }

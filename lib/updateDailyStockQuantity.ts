@@ -1,4 +1,6 @@
 import { prisma } from "@/db/db";
+import { isEqual } from "date-fns";
+import { IsEqual } from "react-hook-form";
 
 export async function updateDailyStockQuntity(
   currentDate: Date,
@@ -8,9 +10,13 @@ export async function updateDailyStockQuntity(
   tx: any,
 ) {
   // check if the record present for the day already
+  // takeing the latest and bsing quantity on that(wrong)
   const existingRecords = await tx.dailyStockQuantity.findMany({
     where: {
       id: productId,
+      date: {
+        lte: currentDate,
+      },
     },
     take: 2,
   });
@@ -30,8 +36,16 @@ export async function updateDailyStockQuntity(
   }
 
   // Check if a new record is needed for the current date
-  const isNewRecordNeeded =
-    mostRecentRecord.date.toDateString() !== currentDate.toDateString();
+  // how do I check if
+  // const result =
+  const isNewRecordNeeded = !isEqual(
+    new Date(mostRecentRecord.date),
+    new Date(currentDate),
+  );
+  console.log();
+  console.log("IS NEW RECORD NEDEED", isNewRecordNeeded);
+  // mostRecentRecord.date.toDateString !== currentDate.toDateString;
+  // .toDateString();
 
   let updatedDailyStockQuntity = 0;
   if (operation === "add") {
