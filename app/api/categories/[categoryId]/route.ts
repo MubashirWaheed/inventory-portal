@@ -42,6 +42,7 @@ export async function POST(
     // ADD PRODUCT
     const product = await prisma.product.create({
       data: {
+        createdAt: new Date(),
         itemCode,
         company,
         quantity: parsedQuantity,
