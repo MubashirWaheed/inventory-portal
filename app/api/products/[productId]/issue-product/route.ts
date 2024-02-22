@@ -3,6 +3,7 @@ import { prisma } from "@/db/db";
 import { updateDailyStockQuntity } from "@/lib/updateDailyStockQuantity";
 import { updateTotalStockCount } from "@/lib/updateTotalStockCount";
 import { auth } from "@clerk/nextjs";
+import { error } from "console";
 import { isBefore } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,19 +24,20 @@ export async function POST(req: NextRequest) {
   } = request;
 
   try {
+    // GET THE PODUCT BEING ISSUED
     const product = await prisma.product.findUnique({
       where: {
         id,
       },
     });
+    if (!product) return new NextResponse("Product not found", { status: 404 });
+
     // if TRUE return not allowed
     if (isBefore(dateOfIssue, product?.createdAt)) {
-      return new NextResponse("Can not issued before the addtion date", {
+      return new NextResponse("Can not issue before the addtion date", {
         status: 401,
       });
     }
-
-    if (!product) return new NextResponse("Product not found", { status: 404 });
 
     if (product.quantity == 0)
       return new NextResponse("Quantity out of stock", { status: 401 });
@@ -64,7 +66,6 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      //
       await tx.issueItem.create({
         data: {
           productId: id,
@@ -77,6 +78,7 @@ export async function POST(req: NextRequest) {
 
       let currentDate = dateOfIssue;
       await updateTotalStockCount(issueQuantity, currentDate, operation, tx);
+
       await updateDailyStockQuntity(
         currentDate,
         id,

@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     await prisma.$transaction(async (tx) => {
       const product = await tx.product.create({
         data: {
-          createdAt: new Date(),
+          createdAt: currentDate,
           itemCode,
           company,
           quantity: parsedQuantity,

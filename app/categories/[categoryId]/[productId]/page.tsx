@@ -30,10 +30,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-// import { invoices } from "../constants/invoices";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetecher";
-import { addDays, format, getMonth, startOfMonth } from "date-fns";
+import { format, startOfMonth } from "date-fns";
 import { useParams } from "next/navigation";
 import { DateRange } from "react-day-picker";
 
@@ -54,12 +53,15 @@ const Product = () => {
     fetcher,
   );
 
-  console.log("data from the issueItem API ", data);
+  console.log("data from the issueItem API ", data?.data);
 
   return (
     <div className="px-8 pb-8 pt-6">
       <div className="flex justify-between">
-        <h2 className="text-3xl font-bold">MGL:300</h2>
+        {/* MAKE THIS NAME DYNAMIC */}
+        <h2 className="text-3xl font-bold">
+          {data && data.data[0]?.Product.itemCode}
+        </h2>
         <DatePickerWithRange date={date} setDate={setDate} />
       </div>
 
@@ -107,11 +109,7 @@ const Product = () => {
 
               return (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">
-                    {parsedDate}
-                    {/* <br /> */}
-                    {/* {parsedTime} */}
-                  </TableCell>
+                  <TableCell className="font-medium">{parsedDate}</TableCell>
                   <TableCell>{item.Employee.displayName}</TableCell>
                   <TableCell>{item.jobCard}</TableCell>
                   <TableCell>{item.issuedQuantity}</TableCell>

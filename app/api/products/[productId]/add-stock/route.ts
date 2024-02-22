@@ -33,17 +33,20 @@ export async function POST(
 
     let operation = "add";
 
+    let newQuantity = product.quantity + addedStock;
+
     await prisma.$transaction(async (tx) => {
       await tx.product.update({
         where: {
           id: parsedId,
         },
         data: {
-          quantity: product?.quantity + addedStock,
+          quantity: newQuantity,
         },
       });
 
       // Create Added Stock Product Transaction
+      // check if record presnet for that day then update that instead of creating new one
       await tx.addStock.create({
         data: {
           addedAt: currentDate,
@@ -65,6 +68,7 @@ export async function POST(
 
     return NextResponse.json("added stock", { status: 201 });
   } catch (error) {
+    console.log("ERROR:", error);
     return new NextResponse("error adding stock", { status: 401 });
   }
 }

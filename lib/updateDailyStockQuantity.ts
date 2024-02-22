@@ -1,5 +1,5 @@
 import { prisma } from "@/db/db";
-import { isEqual } from "date-fns";
+import { isEqual, isSameDay } from "date-fns";
 import { IsEqual } from "react-hook-form";
 
 export async function updateDailyStockQuntity(
@@ -13,16 +13,19 @@ export async function updateDailyStockQuntity(
   // takeing the latest and bsing quantity on that(wrong)
   const existingRecords = await tx.dailyStockQuantity.findMany({
     where: {
-      id: productId,
-      date: {
-        lte: currentDate,
-      },
+      productId: productId,
+      // date: {
+      //   lte: currentDate,
+      // },
     },
-    take: 2,
+    orderBy: {
+      date: "desc",
+    },
+    take: 1,
   });
 
   const mostRecentRecord = existingRecords[0];
-
+  console.log("existingRecords: ", existingRecords);
   if (existingRecords.length === 0) {
     // No existing records, create a new one
     await tx.dailyStockQuantity.create({
@@ -35,17 +38,10 @@ export async function updateDailyStockQuntity(
     return; // Exit function
   }
 
-  // Check if a new record is needed for the current date
-  // how do I check if
-  // const result =
-  const isNewRecordNeeded = !isEqual(
-    new Date(mostRecentRecord.date),
-    new Date(currentDate),
-  );
-  console.log();
-  console.log("IS NEW RECORD NEDEED", isNewRecordNeeded);
-  // mostRecentRecord.date.toDateString !== currentDate.toDateString;
-  // .toDateString();
+  const isNewRecordNeeded = !isSameDay(currentDate, mostRecentRecord.date);
+  console.log("isNewRecordNeeded: ", isNewRecordNeeded);
+  console.log("CURRNET DATE:", currentDate);
+  console.log("mostRecentRecord.date: ", mostRecentRecord.date);
 
   let updatedDailyStockQuntity = 0;
   if (operation === "add") {
@@ -66,7 +62,7 @@ export async function updateDailyStockQuntity(
   } else {
     await tx.dailyStockQuantity.update({
       where: {
-        id: productId,
+        id: mostRecentRecord.id,
       },
       data: {
         quantity: updatedDailyStockQuntity,

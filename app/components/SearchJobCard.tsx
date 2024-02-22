@@ -41,7 +41,7 @@ const SearchJobCard = () => {
     <div className="flex flex-col">
       <Input
         className="w-64 mt-4"
-        placeholder="Enter person name"
+        placeholder="enter job card number"
         onChange={handleInput}
       />
 

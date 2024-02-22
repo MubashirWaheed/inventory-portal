@@ -1,4 +1,7 @@
 import { prisma } from "@/db/db";
+import { error } from "console";
+import { isBefore, isSameDay } from "date-fns";
+import { NextResponse } from "next/server";
 
 // Function to update total stock count
 export async function updateTotalStockCount(
@@ -7,43 +10,57 @@ export async function updateTotalStockCount(
   operation: string,
   tx: any,
 ) {
-  const existingRecords = await tx.totalStockCount.findMany({
+  // GET THE LATEST record for the count
+  const latestRecord = await tx.totalStockCount.findMany({
     orderBy: {
       date: "desc",
     },
     take: 1,
   });
+  // if no record present than create one
 
-  const mostRecentRecord = existingRecords[0];
-
-  if (existingRecords.length === 0) {
-    // No existing records, create a new one
-    await tx.totalStockCount.create({
+  // in case no record present it should return after this if statement
+  if (latestRecord.length == 0) {
+    // create record
+    const record = await tx.totalStockCount.create({
       data: {
         date: currentDate,
-
         totalStockCount: quantity,
       },
     });
-    return; // Exit function
+    return;
   }
 
-  const isNewRecordNeeded = mostRecentRecord.date !== currentDate;
-
-  let updatedTotalStockCount = 0;
-
-  if (operation === "add") {
-    updatedTotalStockCount = mostRecentRecord.totalStockCount + quantity;
-  } else if (operation === "subtract") {
-    updatedTotalStockCount = mostRecentRecord.totalStockCount - quantity;
+  // also using this function to add to the total stock count
+  // check for that
+  if (isBefore(currentDate, latestRecord[0].date) && operation == "subtract") {
+    throw new Error("Can't issue before the last issue date");
   }
-  await tx.totalStockCount.update({
-    where: {
-      id: mostRecentRecord.id,
-    },
-    data: {
-      date: currentDate,
-      totalStockCount: updatedTotalStockCount,
-    },
-  });
+  console.log("latestRecord in the totalStockCount: : ", latestRecord);
+
+  let newCount;
+  if (operation == "add") {
+    newCount = latestRecord[0].totalStockCount + quantity;
+  } else if ("subtract") {
+    newCount = latestRecord[0].totalStockCount - quantity;
+  }
+
+  // create new record in case no record present for todays date
+  if (isSameDay(currentDate, latestRecord[0].date)) {
+    const newRecord = await tx.totalStockCount.update({
+      where: {
+        id: latestRecord[0].id,
+      },
+      data: {
+        totalStockCount: newCount,
+      },
+    });
+  } else {
+    const newRecord = await tx.totalStockCount.create({
+      data: {
+        date: currentDate,
+        totalStockCount: newCount,
+      },
+    });
+  }
 }

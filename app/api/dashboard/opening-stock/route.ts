@@ -21,10 +21,7 @@ export async function GET(req: NextRequest) {
   });
 
   console.log("record for the opening-stock: ", record);
-  // Check if the record exists
-  // if (!record) {
-  //   return NextResponse.json("no record found", { status: 400 });
-  // }
+
   if (record == null)
     return NextResponse.json({ openingStock: 0 }, { status: 200 });
 

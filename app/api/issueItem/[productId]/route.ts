@@ -11,10 +11,6 @@ export async function GET(
 
   console.log("FROM:", from, "TO:", to);
   let fromDate, toDate;
-  // if (from !== null && to !== null) {
-  //   fromDate = new Date(from);
-  //   toDate = new Date(to);
-  // }
 
   console.log("FROM:", from, "TO: ", to);
 
@@ -37,6 +33,11 @@ export async function GET(
     },
     include: {
       Employee: true,
+      Product: {
+        select: {
+          itemCode: true,
+        },
+      },
     },
   });
 

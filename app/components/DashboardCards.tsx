@@ -10,11 +10,9 @@ const DashboardCards = ({
   issuedItem,
   currentMonth,
 }: any) => {
-  console.log("------------------IN THE CARDS DASHBOARD------------- ");
-  console.log("addedStock: ", addedStock);
   return (
     <div className="mt-4 w-full h-full grid sm:grid-cols-2  lg:grid-cols-4 gap-4 ">
-      <Card>
+      <Card className="h-[150px]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base font-medium">Opening Stock</CardTitle>
         </CardHeader>
@@ -26,7 +24,7 @@ const DashboardCards = ({
         </CardContent>
       </Card>
       <Link href="/details/current-stock">
-        <Card>
+        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Current Stock
@@ -46,13 +44,13 @@ const DashboardCards = ({
       </Link>
 
       <Link href="/details/added-stock">
-        <Card className="hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
+        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Stock Bought
             </CardTitle>
           </CardHeader>
-          <CardContent className="pb-10">
+          <CardContent>
             <div className="text-3xl font-bold">
               {addedStock &&
               addedStock._sum &&
@@ -67,14 +65,36 @@ const DashboardCards = ({
         </Card>
       </Link>
 
-      <Link href="/details/issued-items">
+      {/* <Link href="/details/added-stock">
         <Card className="hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">
+              Stock Bought
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="">
+            <div className="text-3xl font-bold">
+              {addedStock &&
+              addedStock._sum &&
+              addedStock._sum.quantity !== null
+                ? addedStock._sum.quantity
+                : 0}
+            </div>
+            <p className="text-sm text-muted-foreground">
+              for the above time period
+            </p>
+          </CardContent>
+        </Card>
+      </Link> */}
+
+      <Link href="/details/issued-items">
+        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Items Issued
             </CardTitle>
           </CardHeader>
-          <CardContent className="pb-10">
+          <CardContent>
             <div className="text-3xl font-bold">
               {issuedItem &&
               issuedItem._sum &&
