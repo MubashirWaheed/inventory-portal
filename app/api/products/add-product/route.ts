@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
   const { itemCode, company, quantity } = await req.json();
 
   const parsedQuantity = parseInt(quantity);
+  console.log("ParsedCategoryId: ", parsedCategoryId);
 
   let operation = "add";
 

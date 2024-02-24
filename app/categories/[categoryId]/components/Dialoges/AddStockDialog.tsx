@@ -45,7 +45,6 @@ const AddStockDialog = ({ item }: { item: Product }) => {
   const { mutate } = useSWRConfig();
   const { itemCode, id: productId, categoryId, quantity } = item;
 
-  console.log("item: ", item);
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({

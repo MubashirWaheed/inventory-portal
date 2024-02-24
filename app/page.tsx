@@ -26,20 +26,23 @@ export default function Home() {
 
   console.log("DATE IN TEH FRONTEND", date);
 
-  const { data } = useSWR("/api/dashboard/opening-stock", fetcher);
+  const { data, isLoading: openingLoading } = useSWR(
+    "/api/dashboard/opening-stock",
+    fetcher,
+  );
   console.log("data: ", data);
 
-  const { data: currentStockRecord } = useSWR(
+  const { data: currentStockRecord, isLoading: currentLoading } = useSWR(
     "/api/dashboard/current-stock",
     fetcher,
   );
 
-  const { data: addedStock } = useSWR(
+  const { data: addedStock, isLoading: itemAddedSumLoading } = useSWR(
     `/api/dashboard/items-added-sum?from=${date?.from}&to=${date?.to}`,
     fetcher,
   );
 
-  const { data: issuedItem } = useSWR(
+  const { data: issuedItem, isLoading: issuedItemLoading } = useSWR(
     `/api/dashboard/issued-item-sum?from=${date?.from}&to=${date?.to}`,
     fetcher,
   );
@@ -51,6 +54,11 @@ export default function Home() {
     addedStock,
     issuedItem,
   );
+  const isLoading =
+    issuedItemLoading ||
+    itemAddedSumLoading ||
+    currentLoading ||
+    openingLoading;
   // const isLoading =
   //   !data ||
   //   !currentStockRecord ||
@@ -61,15 +69,6 @@ export default function Home() {
   //   // addedStockError ||
   //   // issuedItemError;
 
-  console.log("issuedItem: ", issuedItem);
-  console.log("addedStock: ", addedStock);
-
-  console.log(data);
-  console.log("currentStockRecord: ", currentStockRecord);
-
-  useEffect(() => {
-    console.log("addedStock: ", addedStock);
-  }, [addedStock]);
   return (
     <div className="px-8 pt-6 pb-8">
       <div className="flex flex-col lg:flex-row justify-between">
@@ -91,17 +90,17 @@ export default function Home() {
             <TabsTrigger value="searchPerson">Search Person</TabsTrigger>
           </TabsList>
           <TabsContent value="overview">
-            {/* {isLoading ? (
+            {isLoading ? (
               <CardSkeleton />
-            ) : ( */}
-            <DashboardCards
-              addedStock={addedStock}
-              data={data}
-              currentStockRecord={currentStockRecord}
-              issuedItem={issuedItem}
-              currentMonth={currentMonth}
-            />
-            {/* )} */}
+            ) : (
+              <DashboardCards
+                addedStock={addedStock}
+                data={data}
+                currentStockRecord={currentStockRecord}
+                issuedItem={issuedItem}
+                currentMonth={currentMonth}
+              />
+            )}
           </TabsContent>
           <TabsContent value="searchJobCard">
             <SearchJobCard />

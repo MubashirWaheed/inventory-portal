@@ -35,11 +35,11 @@ export default function IssuedItems() {
           <TableCaption>A list of your recent Issued Items.</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Index</TableHead>
-              <TableHead className="w-[100px]">Product</TableHead>
-              <TableHead className="text-center">Quantity</TableHead>
-              <TableHead className="text-right">Company</TableHead>
-              <TableHead className="text-center">Category</TableHead>
+              <TableHead className="">Index</TableHead>
+              <TableHead className="">Product</TableHead>
+              <TableHead className="">Quantity</TableHead>
+              <TableHead className="">Company</TableHead>
+              <TableHead className="">Category</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -49,16 +49,9 @@ export default function IssuedItems() {
                   <TableRow key={index}>
                     <TableCell className="font-medium">{index}</TableCell>
                     <TableCell>{record.itemCode}</TableCell>
-                    <TableCell className="text-center"></TableCell>
-                    <TableCell className="text-right">
-                      {record.quantity}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {record.company}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {record.category}
-                    </TableCell>
+                    <TableCell className="">{record.quantity}</TableCell>
+                    <TableCell className="">{record.company}</TableCell>
+                    <TableCell className="">{record.Category.name}</TableCell>
                   </TableRow>
                 );
               })}

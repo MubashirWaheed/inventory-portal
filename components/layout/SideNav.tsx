@@ -51,6 +51,10 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
     }
   }, [error]);
 
+  useEffect(() => {
+    console.log("data for category:", data);
+  }, [data]);
+
   return (
     <nav className="space-y-2 flex flex-col">
       <div className="">
@@ -113,17 +117,18 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
             <AccordionContent className="ml-4 mt-2 space-y-2 pb-1">
               {/* id of the category when using nano id */}
               {data?.map((item: any, index: number) => {
+                console.log("id:", item.id);
                 return (
                   <Link
                     key={index}
-                    href={`/categories/${index}`}
+                    href={`/categories/${item.id}`}
                     onClick={() => {
                       if (setOpen) setOpen(false);
                     }}
                     className={cn(
                       buttonVariants({ variant: "ghost" }),
                       "group flex h-12 justify-start gap-x-3",
-                      path === `/categories/${index}` &&
+                      path === `/categories/${item.id}` &&
                         "bg-muted font-bold hover:bg-muted",
                     )}
                   >

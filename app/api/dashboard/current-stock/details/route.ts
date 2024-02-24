@@ -6,11 +6,7 @@ export async function GET(req: NextRequest) {
   const data = await prisma.product.findMany({
     // get all the products
     include: {
-      Category: {
-        select: {
-          name: true,
-        },
-      },
+      Category: true,
     },
   });
   console.log("PRODUCTS  ", data);

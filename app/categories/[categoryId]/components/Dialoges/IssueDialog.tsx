@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { addDays, format, isToday, startOfToday } from "date-fns";
+import { addDays, format, isToday } from "date-fns";
 import {
   Form,
   FormControl,
@@ -39,12 +39,9 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { convertToUtcDate } from "@/lib/convertToUTCDate";
-import { currentUtcDate } from "@/lib/currentUtcDate";
 
 interface Employee {
   id: number;
@@ -69,7 +66,6 @@ const issueFormSchema = z
     linkTo: z.string(),
   })
   .refine((input) => {
-    console.log("input.linkTo: ", input.linkTo);
     if (input.linkTo !== "garage" && input.jobCard == "") {
       return false;
     }
@@ -93,6 +89,7 @@ const IssueDialog = ({ item }: { item: Product }) => {
 
   const { isSubmitting, isValid } = form.formState;
 
+  const watchedValues = form.watch(["dateOfIssue", "quantity"]);
   const { itemCode, id, categoryId, quantity } = item;
   const [open, setOpen] = useState(false);
 
@@ -120,6 +117,10 @@ const IssueDialog = ({ item }: { item: Product }) => {
       toast.error(error?.response?.data);
     }
   };
+
+  useEffect(() => {
+    console.log("watchedValues: ", watchedValues);
+  }, [watchedValues]);
 
   useEffect(() => {
     if (!open) {
@@ -300,7 +301,7 @@ const IssueDialog = ({ item }: { item: Product }) => {
                             selected={field.value}
                             onSelect={field.onChange}
                             disabled={(date) =>
-                              date > new Date() || date < new Date("1999-01-01")
+                              date > new Date() || date < new Date("2016-01-01")
                             }
                             initialFocus
                           />
