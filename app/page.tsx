@@ -2,19 +2,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DatePickerWithRange } from "@/components/ui/daterangepicker";
 import CategoryDialog from "./components/CreateCategoryDialog";
-import { format, getMonth, startOfMonth } from "date-fns";
+import { format } from "date-fns";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetecher";
-import Link from "next/link";
 import CardSkeleton from "@/components/CardSkeleton";
 import useDashboardTimeFrame from "@/hooks/useDashboardTimeFrame";
-// import DashboardCards from 'first'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardCards from "./components/DashboardCards";
 import SearchPerson from "./components/SearchPerson";
 import SearchJobCard from "./components/SearchJobCard";
-import { useEffect } from "react";
 
 export default function Home() {
   // Hook that fetches the opening closing month stock
@@ -59,15 +56,6 @@ export default function Home() {
     itemAddedSumLoading ||
     currentLoading ||
     openingLoading;
-  // const isLoading =
-  //   !data ||
-  //   !currentStockRecord ||
-  //   !addedStock ||
-  //   !issuedItem ||
-  //   // dataError ||
-  //   // currentStockError ||
-  //   // addedStockError ||
-  //   // issuedItemError;
 
   return (
     <div className="px-8 pt-6 pb-8">

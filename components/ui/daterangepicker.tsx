@@ -14,7 +14,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-// React.HTMLAttributes<HTMLDivElement>
 export function DatePickerWithRange({
   date,
   setDate,
@@ -59,9 +58,9 @@ export function DatePickerWithRange({
             selected={date}
             onSelect={setDate}
             numberOfMonths={2}
-            // disabled={(date) =>
-            //   date > new Date() || date < new Date("1900-01-01")
-            // }
+            disabled={(date) =>
+              date > new Date() || date < new Date("2018-01-01")
+            }
           />
         </PopoverContent>
       </Popover>
