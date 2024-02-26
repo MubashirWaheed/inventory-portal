@@ -33,7 +33,7 @@ const AddedStock = () => {
       {/* Just fetch the details for the above time frame for now */}
       <div>
         <Table>
-          <TableCaption>A list of your recent Issued Items.</TableCaption>
+          <TableCaption>A list of recently added Stock.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Index</TableHead>
@@ -49,7 +49,7 @@ const AddedStock = () => {
                 const formattedDate = format(parsedDate, "dd MMMM yyyy");
                 return (
                   <TableRow key={index}>
-                    <TableCell className="font-medium">{index}</TableCell>
+                    <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell>{formattedDate}</TableCell>
                     <TableCell>{record.Product.itemCode}</TableCell>
                     <TableCell className="text-center">

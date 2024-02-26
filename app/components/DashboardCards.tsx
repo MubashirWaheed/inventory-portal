@@ -65,28 +65,6 @@ const DashboardCards = ({
         </Card>
       </Link>
 
-      {/* <Link href="/details/added-stock">
-        <Card className="hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-base font-medium">
-              Stock Bought
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="">
-            <div className="text-3xl font-bold">
-              {addedStock &&
-              addedStock._sum &&
-              addedStock._sum.quantity !== null
-                ? addedStock._sum.quantity
-                : 0}
-            </div>
-            <p className="text-sm text-muted-foreground">
-              for the above time period
-            </p>
-          </CardContent>
-        </Card>
-      </Link> */}
-
       <Link href="/details/issued-items">
         <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -111,8 +89,8 @@ const DashboardCards = ({
         </Card>
       </Link>
 
-      {/* <Link href="/search/jobCard">
-        <Card>
+      <Link href="/details/search-jobcard">
+        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Search Against JobCard
@@ -126,8 +104,8 @@ const DashboardCards = ({
         </Card>
       </Link>
 
-      <Link href="/search/person">
-        <Card>
+      <Link href="/details/search-person">
+        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Search Against Person
@@ -135,11 +113,11 @@ const DashboardCards = ({
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Number of items issued for specific Person
+              Number of items issued to specific Person
             </p>
           </CardContent>
         </Card>
-      </Link> */}
+      </Link>
     </div>
   );
 };
