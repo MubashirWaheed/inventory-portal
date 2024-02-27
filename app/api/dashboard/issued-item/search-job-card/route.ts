@@ -1,4 +1,3 @@
-import JobCard from "@/app/search/jobCard/page";
 import { prisma } from "@/db/db";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,7 +12,6 @@ export async function GET(
   const from = req.nextUrl.searchParams.get("from") as string;
   const to = req.nextUrl.searchParams.get("to") as string;
 
-  console.log("--------------------------------JOBCARD: ", jobCard);
   const data = await prisma.issueItem.findMany({
     where: {
       issuedAt: {

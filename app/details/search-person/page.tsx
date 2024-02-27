@@ -33,7 +33,6 @@ import {
 import { Button } from "@/components/ui/button";
 
 const SearchPerson = () => {
-  const currentDate = new Date();
   const { date, setDate } = useDashboardTimeFrameStore();
   const { data: listOfEmployees } = useSWR("/api/employees", fetcher);
 
