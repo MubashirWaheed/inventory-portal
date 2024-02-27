@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/table";
 import { format, parseISO } from "date-fns";
 
-// make api request
 const AddedStock = () => {
   const { date } = useDashboardTimeFrameStore();
 
@@ -23,7 +22,6 @@ const AddedStock = () => {
     `/api/dashboard/items-added-sum/details?from=${date.from}&to=${date.to}`,
     fetcher,
   );
-  console.log("data: ", data);
 
   return (
     <div className="px-8 pt-6 pb-8">

@@ -30,6 +30,7 @@ import { fetcher } from "@/lib/fetecher";
 import { Button } from "@/components/ui/button";
 import { useEmployees } from "@/hooks/useEmployees";
 import AddItemDialog from "./components/Dialoges/AddItemDialog";
+import { Protect, useAuth } from "@clerk/nextjs";
 
 interface CategoryItem {
   categoryId: number;
@@ -40,6 +41,7 @@ interface CategoryItem {
 }
 
 const Category = () => {
+  const { orgId, orgRole } = useAuth();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -99,7 +101,9 @@ const Category = () => {
           className="max-w-sm"
         />
         <div className="flex gap-3">
-          <AddItemDialog />
+          <Protect permission="org:feature:create">
+            <AddItemDialog />
+          </Protect>
         </div>
       </div>
 

@@ -51,10 +51,6 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
     }
   }, [error]);
 
-  useEffect(() => {
-    console.log("data for category:", data);
-  }, [data]);
-
   return (
     <nav className="space-y-2 flex flex-col">
       <div className="">
@@ -116,34 +112,34 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
             </AccordionTrigger>
             <AccordionContent className="ml-4 mt-2 space-y-2 pb-1">
               {/* id of the category when using nano id */}
-              {data?.map((item: any, index: number) => {
-                console.log("id:", item.id);
-                return (
-                  <Link
-                    key={index}
-                    href={`/categories/${item.id}`}
-                    onClick={() => {
-                      if (setOpen) setOpen(false);
-                    }}
-                    className={cn(
-                      buttonVariants({ variant: "ghost" }),
-                      "group flex h-12 justify-start gap-x-3",
-                      path === `/categories/${item.id}` &&
-                        "bg-muted font-bold hover:bg-muted",
-                    )}
-                  >
-                    <ListTodo className={cn("h-5 w-5 text-red-500")} />
-                    <div
+              {data &&
+                data?.map((item: any, index: number) => {
+                  return (
+                    <Link
+                      key={index}
+                      href={`/categories/${item.id}`}
+                      onClick={() => {
+                        if (setOpen) setOpen(false);
+                      }}
                       className={cn(
-                        "text-sm duration-200",
-                        !isOpen && className,
+                        buttonVariants({ variant: "ghost" }),
+                        "group flex h-12 justify-start gap-x-3",
+                        path === `/categories/${item.id}` &&
+                          "bg-muted font-bold hover:bg-muted",
                       )}
                     >
-                      {item.name}
-                    </div>
-                  </Link>
-                );
-              })}
+                      <ListTodo className={cn("h-5 w-5 text-red-500")} />
+                      <div
+                        className={cn(
+                          "text-sm duration-200",
+                          !isOpen && className,
+                        )}
+                      >
+                        {item.name}
+                      </div>
+                    </Link>
+                  );
+                })}
             </AccordionContent>
           </AccordionItem>
         </Accordion>

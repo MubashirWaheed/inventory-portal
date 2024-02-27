@@ -12,7 +12,7 @@ const DashboardCards = ({
 }: any) => {
   return (
     <div className="mt-4 w-full h-full grid sm:grid-cols-2  lg:grid-cols-4 gap-4 ">
-      <Card className="h-[150px]">
+      <Card className="transition-all ease-in-out dark:hover:scale-[1.01] h-[150px] hover:cursor-pointer">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base font-medium">Opening Stock</CardTitle>
         </CardHeader>
@@ -24,7 +24,7 @@ const DashboardCards = ({
         </CardContent>
       </Card>
       <Link href="/details/current-stock">
-        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
+        <Card className="h-[150px]  dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Current Stock
@@ -44,7 +44,7 @@ const DashboardCards = ({
       </Link>
 
       <Link href="/details/added-stock">
-        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
+        <Card className="h-[150px] dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Stock Bought
@@ -66,7 +66,7 @@ const DashboardCards = ({
       </Link>
 
       <Link href="/details/issued-items">
-        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
+        <Card className="h-[150px] dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Items Issued
@@ -90,7 +90,7 @@ const DashboardCards = ({
       </Link>
 
       <Link href="/details/search-jobcard">
-        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out transition-all">
+        <Card className="h-[150px] dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Search Against JobCard
@@ -105,7 +105,7 @@ const DashboardCards = ({
       </Link>
 
       <Link href="/details/search-person">
-        <Card className="h-[150px] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
+        <Card className="h-[150px] dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Search Against Person

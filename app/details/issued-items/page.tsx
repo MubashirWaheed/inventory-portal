@@ -52,7 +52,7 @@ export default function IssuedItems() {
                 const formattedDate = format(parsedDate, "dd MMMM yyyy");
                 return (
                   <TableRow key={index}>
-                    <TableCell className="font-medium">{index}</TableCell>
+                    <TableCell className="font-medium">{index + 1}</TableCell>
                     <TableCell>{formattedDate}</TableCell>
                     <TableCell>{record.Product.itemCode}</TableCell>
                     <TableCell className="text-center">

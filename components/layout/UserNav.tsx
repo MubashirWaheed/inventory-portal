@@ -35,7 +35,7 @@ export function UserNav({ name = "", email = "" }: Props) {
           <div className="flex flex-col space-y-1 leading-none">
             {name && <p className="font-medium">{name}</p>}
             {email && (
-              <p className="w-[200px] truncate text-sm text-zinc-700">
+              <p className="w-[200px] truncate text-sm text-muted-foreground">
                 {email}
               </p>
             )}

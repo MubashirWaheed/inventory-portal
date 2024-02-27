@@ -8,8 +8,30 @@ import CardSkeleton from "@/components/CardSkeleton";
 import useDashboardTimeFrame from "@/hooks/useDashboardTimeFrame";
 
 import DashboardCards from "./components/DashboardCards";
+import { Protect, useAuth, useOrganizationList } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 export default function Home() {
+  const { isLoaded, setActive, userMemberships } = useOrganizationList({
+    userMemberships: {
+      infinite: true,
+    },
+  });
+
+  const { orgId, orgRole } = useAuth();
+
+  useEffect(() => {
+    if (userMemberships.data && userMemberships.data.length !== 0) {
+      // @ts-ignore
+      setActive({ organization: userMemberships.data[0]?.organization.id });
+    }
+  }, [userMemberships.data]);
+
+  useEffect(() => {
+    console.log("orgeRole:", orgRole);
+    console.log("ordId:", orgId);
+  }, [orgId]);
+
   const currentDate = new Date();
   const { date, setDate } = useDashboardTimeFrame();
 
@@ -50,7 +72,9 @@ export default function Home() {
             // @ts-ignore
             <DatePickerWithRange date={date} setDate={setDate} />
           }
-          <CategoryDialog />
+          <Protect permission="org:feature:create">
+            <CategoryDialog />
+          </Protect>
         </div>
       </div>
       <div>

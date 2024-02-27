@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import IssueDialog from "./components/Dialoges/IssueDialog";
 import ProductCell from "./components/ProductCell";
-// import AddStock from "./components/Dialoges/AddStockDialog";
 import AddStockDialog from "./components/Dialoges/AddStockDialog";
+import { Protect, useAuth } from "@clerk/nextjs";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -66,7 +66,11 @@ export const columns: ColumnDef<Product>[] = [
     id: "addStockDialog",
     enableHiding: false,
     cell: ({ row }) => {
-      return <AddStockDialog item={row.original} />;
+      return (
+        <Protect permission="org:feature:create">
+          <AddStockDialog item={row.original} />
+        </Protect>
+      );
     },
   },
 ];
