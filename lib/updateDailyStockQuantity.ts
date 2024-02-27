@@ -1,6 +1,5 @@
 import { prisma } from "@/db/db";
-import { isEqual, isSameDay } from "date-fns";
-import { IsEqual } from "react-hook-form";
+import { isSameDay } from "date-fns";
 
 export async function updateDailyStockQuntity(
   currentDate: Date,
@@ -14,9 +13,6 @@ export async function updateDailyStockQuntity(
   const existingRecords = await tx.dailyStockQuantity.findMany({
     where: {
       productId: productId,
-      // date: {
-      //   lte: currentDate,
-      // },
     },
     orderBy: {
       date: "desc",
@@ -39,9 +35,6 @@ export async function updateDailyStockQuntity(
   }
 
   const isNewRecordNeeded = !isSameDay(currentDate, mostRecentRecord.date);
-  console.log("isNewRecordNeeded: ", isNewRecordNeeded);
-  console.log("CURRNET DATE:", currentDate);
-  console.log("mostRecentRecord.date: ", mostRecentRecord.date);
 
   let updatedDailyStockQuntity = 0;
   if (operation === "add") {

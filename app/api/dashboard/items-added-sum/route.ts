@@ -5,8 +5,6 @@ import { number } from "zod";
 export async function GET(req: NextRequest) {
   const from = req.nextUrl.searchParams.get("from") as string;
   const to = req.nextUrl.searchParams.get("to") as string;
-  console.log("from: ", from);
-  console.log("to: ", to);
 
   const sumResult = await prisma.addStock.aggregate({
     _sum: {

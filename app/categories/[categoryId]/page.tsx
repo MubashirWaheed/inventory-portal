@@ -30,7 +30,7 @@ import { fetcher } from "@/lib/fetecher";
 import { Button } from "@/components/ui/button";
 import { useEmployees } from "@/hooks/useEmployees";
 import AddItemDialog from "./components/Dialoges/AddItemDialog";
-import { Protect, useAuth } from "@clerk/nextjs";
+import { Protect } from "@clerk/nextjs";
 
 interface CategoryItem {
   categoryId: number;
@@ -38,10 +38,12 @@ interface CategoryItem {
   id: number;
   itemCode: string;
   quantity: number;
+  Category: {
+    name: string;
+  };
 }
 
 const Category = () => {
-  const { orgId, orgRole } = useAuth();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -50,9 +52,13 @@ const Category = () => {
   const { categoryId } = useParams();
 
   const { data: categoryData } = useSWR<{ data: CategoryItem[] }>(
-    `/api/categories/${categoryId}`,
+    `/api/products/productsByCategory?categoryId=${categoryId}`,
     fetcher,
   );
+  const { data: category } = useSWR(`/api/categories/${categoryId}`, fetcher);
+  // `/api/categories/${categoryId}`,
+
+  // Make api call for the category name
 
   const { data: list } = useSWR("/api/employees", fetcher);
 
@@ -86,8 +92,8 @@ const Category = () => {
   }, [list]);
 
   return (
-    <div className="w-full  px-8 pb-8 pt-6 ">
-      <h2 className="text-3xl font-bold">Oil Filters</h2>
+    <div className="w-full px-8 pb-8 pt-6 ">
+      <h2 className="text-3xl font-bold">{category?.data.name}</h2>
       <div className="flex justify-between items-center py-4">
         {/* CATEGORY SEARCH INPUT */}
         <Input

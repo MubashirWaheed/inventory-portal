@@ -1,7 +1,6 @@
 import { prisma } from "@/db/db";
 import { auth } from "@clerk/nextjs";
 import { Prisma } from "@prisma/client";
-import { addDays } from "date-fns";
 import { NextResponse } from "next/server";
 
 // GET ALL THE PRODCUTS FOR PARTICULAR CATEGORY
@@ -13,13 +12,13 @@ export async function GET(
 
   const parsedCategoryId = parseInt(categoryId);
 
-  const products = await prisma.product.findMany({
+  const category = await prisma.category.findFirst({
     where: {
-      categoryId: parsedCategoryId,
+      id: parsedCategoryId,
     },
   });
 
-  return NextResponse.json({ data: products });
+  return NextResponse.json({ data: category });
 }
 
 // CRAETE PRODUCT FOR SPECIFIC CATEGORY
@@ -35,7 +34,6 @@ export async function POST(
 
   const { categoryId } = params;
   const parsedCategoryId = parseInt(categoryId);
-  console.log("parsedCategoryId: ", parsedCategoryId, typeof parsedCategoryId);
 
   const parsedQuantity = parseInt(quantity, 10);
   try {
@@ -49,10 +47,6 @@ export async function POST(
         categoryId: parsedCategoryId,
       },
     });
-    console.log(
-      "--------------------------CURRENT DATE CURRENT DATE---------",
-      currentDate,
-    );
 
     // ADD QUANITY VALUE TO THE TOTAL QUANTITY
     const existingRecord = await prisma.totalStockCount.findFirst({
@@ -61,11 +55,6 @@ export async function POST(
         // date: "2024-02-10T00:00:00.000Z",
       },
     });
-    console.log(
-      "------------------EXISTING RECORD VALUE: ",
-      existingRecord,
-      "------------------",
-    );
 
     if (existingRecord) {
       await prisma.totalStockCount.update({
@@ -86,34 +75,6 @@ export async function POST(
       });
     }
 
-    // NOW CREATE FOR THSI PARTICULAR PRODUCT
-    // CHECK IF RECORD PRESNT FOR THE PARTICULAR DATE
-
-    // const dailyRecord = await prisma.dailyStockQuantity.findFirst({
-    //   where: {
-    //     date: currentDate,
-    //   },
-    // });
-
-    // if (dailyRecord) {
-    //   await prisma.dailyStockQuantity.update({
-    //     where: {
-    //       id: dailyRecord.id,
-    //     },
-    //     data: {
-    //       quantity: dailyRecord.quantity + quantity,
-    //     },
-    //   });
-    // } else {
-    //   await prisma.dailyStockQuantity.create({
-    //     data: {
-    //       productId: product.id,
-    //       quantity,
-    //       date: currentDate,
-    //     },
-    //   });
-    // }
-
     return NextResponse.json("good");
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -127,5 +88,3 @@ export async function POST(
     return new NextResponse("ERROR FETCHING Products", { status: 500 });
   }
 }
-
-// UPDATE PRODUCT QUANTITY FOR

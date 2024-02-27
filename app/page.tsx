@@ -27,11 +27,6 @@ export default function Home() {
     }
   }, [userMemberships.data]);
 
-  useEffect(() => {
-    console.log("orgeRole:", orgRole);
-    console.log("ordId:", orgId);
-  }, [orgId]);
-
   const currentDate = new Date();
   const { date, setDate } = useDashboardTimeFrame();
 
