@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/button";
 import { useEmployees } from "@/hooks/useEmployees";
 import AddItemDialog from "./components/Dialoges/AddItemDialog";
 import { Protect } from "@clerk/nextjs";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface CategoryItem {
   categoryId: number;
@@ -51,14 +52,11 @@ const Category = () => {
 
   const { categoryId } = useParams();
 
-  const { data: categoryData } = useSWR<{ data: CategoryItem[] }>(
+  const { data: categoryData, isLoading } = useSWR<{ data: CategoryItem[] }>(
     `/api/products/productsByCategory?categoryId=${categoryId}`,
     fetcher,
   );
   const { data: category } = useSWR(`/api/categories/${categoryId}`, fetcher);
-  // `/api/categories/${categoryId}`,
-
-  // Make api call for the category name
 
   const { data: list } = useSWR("/api/employees", fetcher);
 
@@ -132,6 +130,7 @@ const Category = () => {
             </TableRow>
           ))}
         </TableHeader>
+
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
@@ -139,10 +138,10 @@ const Category = () => {
                 {row.getVisibleCells().map((cell) => {
                   return (
                     <TableCell className="cursor-pointer" key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, {
+                        ...cell.getContext(),
+                        helo: "extra",
+                      })}
                     </TableCell>
                   );
                 })}

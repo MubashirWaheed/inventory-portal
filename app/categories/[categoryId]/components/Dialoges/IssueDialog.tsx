@@ -89,7 +89,6 @@ const IssueDialog = ({ item }: { item: Product }) => {
 
   const { isSubmitting, isValid } = form.formState;
 
-  const watchedValues = form.watch(["dateOfIssue", "quantity"]);
   const { itemCode, id, categoryId, quantity } = item;
   const [open, setOpen] = useState(false);
 
@@ -117,10 +116,6 @@ const IssueDialog = ({ item }: { item: Product }) => {
       toast.error(error?.response?.data);
     }
   };
-
-  useEffect(() => {
-    console.log("watchedValues: ", watchedValues);
-  }, [watchedValues]);
 
   useEffect(() => {
     if (!open) {

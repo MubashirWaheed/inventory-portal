@@ -1,12 +1,14 @@
 "use client";
 import { Product } from "@/types/Payment";
-import { ColumnDef } from "@tanstack/react-table";
+import { CellContext, ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import IssueDialog from "./components/Dialoges/IssueDialog";
 import ProductCell from "./components/ProductCell";
 import AddStockDialog from "./components/Dialoges/AddStockDialog";
-import { Protect, useAuth } from "@clerk/nextjs";
+import { Protect } from "@clerk/nextjs";
+
+type RowType = { helo: string };
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -65,10 +67,14 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: "addStockDialog",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: (info: unknown) => {
+      const infoCasted = info as CellContext<RowType, string>;
       return (
         <Protect permission="org:feature:create">
-          <AddStockDialog item={row.original} />
+          <AddStockDialog
+            item={(info as any)?.row?.original}
+            employeeList={(info as any)?.helo}
+          />
         </Protect>
       );
     },

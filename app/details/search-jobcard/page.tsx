@@ -48,7 +48,7 @@ const SearchJobCard = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <Input
             className="w-64 mt-4"
-            placeholder="enter job card number"
+            placeholder="Enter Job Card eg: JC1-2001"
             onChange={handleInput}
           />
           {

@@ -10,6 +10,8 @@ import useDashboardTimeFrame from "@/hooks/useDashboardTimeFrame";
 import DashboardCards from "./components/DashboardCards";
 import { Protect, useAuth, useOrganizationList } from "@clerk/nextjs";
 import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import NextTopLoader from "nextjs-toploader";
 
 export default function Home() {
   const { isLoaded, setActive, userMemberships } = useOrganizationList({

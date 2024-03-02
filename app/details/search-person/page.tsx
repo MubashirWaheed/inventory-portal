@@ -128,7 +128,7 @@ const SearchPerson = () => {
                     {record.Product.itemCode}
                   </TableCell>
                   <TableCell>{record.jobCard}</TableCell>
-                  <TableCell className="">{record.issuedQuantity}</TableCell>
+                  <TableCell>{record.issuedQuantity}</TableCell>
                 </TableRow>
               );
             })}

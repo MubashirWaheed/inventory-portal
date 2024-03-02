@@ -17,6 +17,9 @@ export async function GET(req: NextRequest) {
         lt: myDate,
       },
     },
+    orderBy: {
+      date: "desc",
+    },
     take: 1,
   });
 

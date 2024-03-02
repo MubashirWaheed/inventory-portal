@@ -5,6 +5,7 @@ import "./globals.css";
 import Layout from "@/components/layout";
 import { ThemeProvider } from "next-themes";
 import { ClerkProvider } from "@clerk/nextjs";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +16,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <body className={inter.className}>
           <div>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              <Layout>{children}</Layout>
+              <Layout>
+                <NextTopLoader showSpinner={false} color="#b4cd00" />
+                {children}
+              </Layout>
             </ThemeProvider>
           </div>
         </body>

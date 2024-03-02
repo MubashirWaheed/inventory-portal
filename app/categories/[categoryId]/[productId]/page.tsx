@@ -59,7 +59,7 @@ const Product = () => {
       </div>
 
       {/* CARD */}
-      <Card className="mt-5 py-2">
+      {/* <Card className="mt-5 py-2">
         <CardHeader className="py-3">
           <CardTitle>Overview</CardTitle>
         </CardHeader>
@@ -83,7 +83,7 @@ const Product = () => {
             </CardContent>
           </div>
         </div>
-      </Card>
+      </Card> */}
 
       <div>
         <Table>

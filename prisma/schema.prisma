@@ -42,6 +42,8 @@ model IssueItem {
   issuedToId     Int
   productId      Int
 
+  ReturnedItem ReturnedItem[]
+
   Employee Employee @relation(fields: [issuedToId], references: [id]) // Relation to the Employee model
 
   Product Product @relation(fields: [productId], references: [id])
@@ -87,4 +89,15 @@ model Employee {
   displayName String
   value       String
   IssueItem   IssueItem[]
+}
+
+model ReturnedItem {
+  id               Int        @id @default(autoincrement())
+  jobCard          String
+  returnedQuantity Int
+  returnedDate     DateTime   @db.Date
+  IssueItem        IssueItem? @relation(fields: [issueItemId], references: [id])
+  issueItemId      Int?
+
+  @@index([issueItemId])
 }

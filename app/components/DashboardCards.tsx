@@ -12,7 +12,7 @@ const DashboardCards = ({
 }: any) => {
   return (
     <div className="mt-4 w-full h-full grid sm:grid-cols-2  lg:grid-cols-4 gap-4 ">
-      <Card className="transition-all ease-in-out dark:hover:scale-[1.01] h-[150px] hover:cursor-pointer">
+      <Card className="transition-all ease-in-out  h-[150px] hover:cursor-pointer">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base font-medium">Opening Stock</CardTitle>
         </CardHeader>
