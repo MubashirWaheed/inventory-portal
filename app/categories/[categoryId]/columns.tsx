@@ -69,11 +69,13 @@ export const columns: ColumnDef<Product>[] = [
     enableHiding: false,
     cell: (info: unknown) => {
       const infoCasted = info as CellContext<RowType, string>;
+      const employeeListData = (info as any)?.employeeList?.data;
       return (
         <Protect permission="org:feature:create">
           <AddStockDialog
             item={(info as any)?.row?.original}
-            employeeList={(info as any)?.helo}
+            suppliersList={(info as any)?.suppliersList}
+            employeeList={employeeListData}
           />
         </Protect>
       );

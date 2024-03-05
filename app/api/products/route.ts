@@ -50,16 +50,6 @@ export async function GET(req: NextRequest) {
 
   const issuedItemQuantity = issuedItemResult._sum.quantity ?? 0;
   const addStockQuantity = addStockResult._sum.quantity ?? 0;
-  console.log(
-    "issuedItemQuantity: ",
-    issuedItemQuantity,
-    "addStockQuantity: ",
-    addStockQuantity,
-  );
-
-  //   console.log("RESULT: ", result);
-  //   return result._sum.quantity ?? 0;
-  //   return NextResponse.json("good");
 
   return NextResponse.json("GOOD DATA");
 }

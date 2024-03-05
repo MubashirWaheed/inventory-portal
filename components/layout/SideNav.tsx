@@ -20,6 +20,7 @@ import { ChevronDownIcon } from "@radix-ui/react-icons";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetecher";
 import { LayoutDashboard, ListTodo } from "lucide-react";
+import { Protect } from "@clerk/nextjs";
 
 interface SideNavProps {
   items: NavItem[];
@@ -111,7 +112,6 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
               )}
             </AccordionTrigger>
             <AccordionContent className="ml-4 mt-2 space-y-2 pb-1">
-              {/* id of the category when using nano id */}
               {data &&
                 data?.map((item: any, index: number) => {
                   return (
@@ -144,27 +144,30 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
           </AccordionItem>
         </Accordion>
 
-        <Link
-          href={"/settings"}
-          onClick={() => {
-            if (setOpen) setOpen(false);
-          }}
-          className={cn(
-            buttonVariants({ variant: "ghost" }),
-            "group relative flex h-12 justify-start",
-            path === "/settings" && "bg-muted font-bold hover:bg-muted",
-          )}
-        >
-          <Settings className={cn("h-5 w-5 text-sky-500")} />
-          <span
+        {/* SETTINGS */}
+        <Protect permission="org:feature:create">
+          <Link
+            href={"/settings"}
+            onClick={() => {
+              if (setOpen) setOpen(false);
+            }}
             className={cn(
-              "absolute left-12 text-base duration-200",
-              !isOpen && className,
+              buttonVariants({ variant: "ghost" }),
+              "group relative flex h-12 justify-start",
+              path === "/settings" && "bg-muted font-bold hover:bg-muted",
             )}
           >
-            Settings
-          </span>
-        </Link>
+            <Settings className={cn("h-5 w-5 text-sky-500")} />
+            <span
+              className={cn(
+                "absolute left-12 text-base duration-200",
+                !isOpen && className,
+              )}
+            >
+              Settings
+            </span>
+          </Link>
+        </Protect>
         <Toaster />
       </div>
     </nav>

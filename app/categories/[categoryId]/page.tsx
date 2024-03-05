@@ -61,6 +61,12 @@ const Category = () => {
   const { data: list } = useSWR("/api/employees", fetcher);
 
   const { setEmployeeList } = useEmployees();
+  const { data: suppliersList } = useSWR("/api/suppliers", fetcher);
+  const { data: employeeList } = useSWR("/api/employees", fetcher);
+
+  useEffect(() => {
+    console.log("EMPLOYEE LIST:", employeeList);
+  }, [employeeList]);
 
   const data = useMemo(() => categoryData?.data ?? [], [categoryData]);
 
@@ -140,7 +146,8 @@ const Category = () => {
                     <TableCell className="cursor-pointer" key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, {
                         ...cell.getContext(),
-                        helo: "extra",
+                        suppliersList,
+                        employeeList,
                       })}
                     </TableCell>
                   );

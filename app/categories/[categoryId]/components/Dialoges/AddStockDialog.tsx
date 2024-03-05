@@ -59,19 +59,6 @@ type Product = {
   categoryId: number;
 };
 
-const suppliers = [
-  { label: "English2", value: "ebb" },
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-];
-
 const baseSchema = z.object({
   quantity: z.coerce.number().min(1).positive().int().max(1000),
 });
@@ -81,13 +68,13 @@ const mySchema = z.discriminatedUnion("stockType", [
     .object({
       stockType: z.literal("bought"),
       supplier: z.string().min(1, { message: "too small" }),
-      invoiceNo: z.string().min(1, { message: "to small" }),
+      invoiceNo: z.string().min(1, { message: "to small" }).trim(),
     })
     .merge(baseSchema),
   z
     .object({
       stockType: z.literal("returned"),
-      jobCard: z.string().min(2),
+      jobCard: z.string().min(2).trim(),
       returnedBy: z.string().min(1),
     })
     .merge(baseSchema),
@@ -95,16 +82,19 @@ const mySchema = z.discriminatedUnion("stockType", [
 
 const AddStockDialog = ({
   item,
+  suppliersList,
   employeeList,
 }: {
   item: Product;
-  employeeList: string;
+  suppliersList: any;
+  employeeList: any;
 }) => {
+  console.log("employeeList inside the form : ", employeeList);
   const { mutate } = useSWRConfig();
   const { itemCode, id: productId, categoryId, quantity } = item;
 
-  const API_URL_RETURNED = `/api/products/${productId}`;
-  const API_URL_BOUGHT = `/api/product/${productId}/add-stock`;
+  const API_URL_RETURNED = `/api/products/${productId}/returned`;
+  const API_URL_BOUGHT = `/api/products/${productId}/add-stock`;
 
   const [open, setOpen] = useState(false);
 
@@ -114,7 +104,7 @@ const AddStockDialog = ({
   const form = useForm({
     resolver: zodResolver(mySchema),
     defaultValues: {
-      quantity: 1,
+      quantity: 0,
       stockType: "bought",
       supplier: "",
       invoiceNo: "",
@@ -149,7 +139,7 @@ const AddStockDialog = ({
       setOpen(false);
       console.log("submitted");
     } catch (error) {
-      console.log("ERROR: ", error);
+      console.log("ERROR in the frontend: ", error);
       toast.error("Error adding items to stock");
     }
   };
@@ -246,10 +236,10 @@ const AddStockDialog = ({
                                 )}
                               >
                                 {field.value
-                                  ? suppliers.find(
+                                  ? suppliersList.find(
                                       (supplier: any) =>
                                         supplier.value === field.value,
-                                    )?.label
+                                    )?.name
                                   : "Select Supplier"}
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
@@ -261,26 +251,28 @@ const AddStockDialog = ({
                                 <CommandInput placeholder="Search Supplier..." />
                                 <CommandEmpty>No Supplier found.</CommandEmpty>
                                 <CommandGroup>
-                                  {suppliers &&
-                                    suppliers?.map((supplier, index) => (
-                                      <CommandItem
-                                        value={supplier.value}
-                                        key={index}
-                                        onSelect={() => {
-                                          handleSelect(supplier);
-                                        }}
-                                      >
-                                        <Check
-                                          className={cn(
-                                            "mr-2 h-4 w-4",
-                                            supplier.value === field.value
-                                              ? "opacity-100"
-                                              : "opacity-0",
-                                          )}
-                                        />
-                                        {supplier.label}
-                                      </CommandItem>
-                                    ))}
+                                  {suppliersList &&
+                                    suppliersList?.map(
+                                      (supplier: any, index: number) => (
+                                        <CommandItem
+                                          value={supplier.value}
+                                          key={index}
+                                          onSelect={() => {
+                                            handleSelect(supplier);
+                                          }}
+                                        >
+                                          <Check
+                                            className={cn(
+                                              "mr-2 h-4 w-4",
+                                              supplier.value === field.value
+                                                ? "opacity-100"
+                                                : "opacity-0",
+                                            )}
+                                          />
+                                          {supplier.name}
+                                        </CommandItem>
+                                      ),
+                                    )}
                                 </CommandGroup>
                               </ScrollArea>
                             </Command>
@@ -319,7 +311,12 @@ const AddStockDialog = ({
                       Job Card
                     </FormLabel>
                     <FormControl className="col-span-3">
-                      <Input type="text" placeholder="Wurth" {...field} />
+                      <Input
+                        type="text"
+                        placeholder="Wurth"
+                        {...field}
+                        // onChange={(event) => field.onChange(event.target.value)}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -337,14 +334,7 @@ const AddStockDialog = ({
                   </FormLabel>
                   <div className="col-span-3">
                     <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="12"
-                        {...field}
-                        onChange={(event) =>
-                          field.onChange(+event.target.value)
-                        }
-                      />
+                      <Input type="number" placeholder="12" {...field} />
                     </FormControl>
                     <FormMessage />
                   </div>
@@ -361,7 +351,6 @@ const AddStockDialog = ({
                     <FormLabel className="col-span-1 text-center">
                       Select Person
                     </FormLabel>
-                    {/* open={supplierOpen} onOpenChange={setSupplierOpen} */}
                     <div className="col-span-3">
                       <Popover open={personOpen} onOpenChange={setPersonOpen}>
                         <PopoverTrigger asChild>
@@ -375,41 +364,43 @@ const AddStockDialog = ({
                               )}
                             >
                               {field.value
-                                ? suppliers.find(
-                                    (supplier: any) =>
-                                      supplier.value === field.value,
-                                  )?.label
-                                : "Select Person"}
+                                ? employeeList.find(
+                                    (employee: any) =>
+                                      employee.value === field.value,
+                                  )?.displayName
+                                : "Select person"}
                               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="p-0">
+                        <PopoverContent className="p-0 ">
                           <Command className="w-full">
                             <ScrollArea className="h-72 overflow-auto w-full">
                               <CommandInput placeholder="Search Supplier..." />
                               <CommandEmpty>No Person found.</CommandEmpty>
                               <CommandGroup>
-                                {suppliers &&
-                                  suppliers?.map((supplier, index) => (
-                                    <CommandItem
-                                      value={supplier.value}
-                                      key={index}
-                                      onSelect={() => {
-                                        personSelect(supplier);
-                                      }}
-                                    >
-                                      <Check
-                                        className={cn(
-                                          "mr-2 h-4 w-4",
-                                          supplier.value === field.value
-                                            ? "opacity-100"
-                                            : "opacity-0",
-                                        )}
-                                      />
-                                      {supplier.label}
-                                    </CommandItem>
-                                  ))}
+                                {employeeList &&
+                                  employeeList?.map(
+                                    (supplier: any, index: number) => (
+                                      <CommandItem
+                                        value={supplier.value}
+                                        key={index}
+                                        onSelect={() => {
+                                          personSelect(supplier);
+                                        }}
+                                      >
+                                        <Check
+                                          className={cn(
+                                            "mr-2 h-4 w-4",
+                                            supplier.value === field.value
+                                              ? "opacity-100"
+                                              : "opacity-0",
+                                          )}
+                                        />
+                                        {supplier.displayName}
+                                      </CommandItem>
+                                    ),
+                                  )}
                               </CommandGroup>
                             </ScrollArea>
                           </Command>

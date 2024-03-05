@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
     issuedTo,
     linkTo,
     dateOfIssue,
+    issuedBy,
   } = request;
 
   try {
@@ -73,6 +74,7 @@ export async function POST(req: NextRequest) {
           issuedQuantity: issueQuantity,
           issuedAt: dateOfIssue,
           jobCard,
+          issuedBy,
         },
       });
 

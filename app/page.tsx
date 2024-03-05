@@ -8,10 +8,8 @@ import CardSkeleton from "@/components/CardSkeleton";
 import useDashboardTimeFrame from "@/hooks/useDashboardTimeFrame";
 
 import DashboardCards from "./components/DashboardCards";
-import { Protect, useAuth, useOrganizationList } from "@clerk/nextjs";
+import { Protect, useAuth, useOrganizationList, useUser } from "@clerk/nextjs";
 import { useEffect } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import NextTopLoader from "nextjs-toploader";
 
 export default function Home() {
   const { isLoaded, setActive, userMemberships } = useOrganizationList({
@@ -20,7 +18,13 @@ export default function Home() {
     },
   });
 
-  const { orgId, orgRole } = useAuth();
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      console.log("CURRENT LOGGED USER: ", user?.firstName);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (userMemberships.data && userMemberships.data.length !== 0) {
@@ -53,6 +57,7 @@ export default function Home() {
     `/api/dashboard/issued-item-sum?from=${date?.from}&to=${date?.to}`,
     fetcher,
   );
+  console.log('ISSUED ITEM SUN: ',issuedItem)
 
   const isLoading =
     issuedItemLoading ||

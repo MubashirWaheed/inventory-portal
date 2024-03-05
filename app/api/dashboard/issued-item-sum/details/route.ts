@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   const from = req.nextUrl.searchParams.get("from") as string;
   const to = req.nextUrl.searchParams.get("to") as string;
 
-  const data = await prisma.issueItem.findMany({
+  const issuedItems = await prisma.issueItem.findMany({
     where: {
       issuedAt: {
         lte: new Date(to),
@@ -23,12 +23,35 @@ export async function GET(req: NextRequest) {
           itemCode: true,
         },
       },
+      // ReturnedItem: {
+      //   where: {
+      //     issueItemId: { equals: { id: true } }, // Replace id with the actual product ID
+      //   },
+      // },
     },
     orderBy: {
       issuedAt: "desc",
     },
   });
 
-  return NextResponse.json(data, { status: 200 });
+  const data2 = await Promise.all(
+    issuedItems.map(async (issuedItem: any) => {
+      const returnedItems = await prisma.returnedItem.findMany({
+        where: {
+          issueItemId: issuedItem.productId, // Assuming productId refers to Product.id
+          // job card should also match
+          jobCard: issuedItem.jobCard,
+        },
+      });
+
+      return {
+        ...issuedItem,
+        ReturnedItem: returnedItems,
+      };
+    }),
+  );
+  console.log("DATA: ", data2);
+
+  return NextResponse.json(data2, { status: 200 });
 }
 export const revalidate = 0;

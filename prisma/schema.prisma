@@ -41,6 +41,7 @@ model IssueItem {
   issuedQuantity Int
   issuedToId     Int
   productId      Int
+  issuedBy       String?
 
   ReturnedItem ReturnedItem[]
 
@@ -92,12 +93,20 @@ model Employee {
 }
 
 model ReturnedItem {
-  id               Int        @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   jobCard          String
   returnedQuantity Int
-  returnedDate     DateTime   @db.Date
-  IssueItem        IssueItem? @relation(fields: [issueItemId], references: [id])
-  issueItemId      Int?
+  returnedBy       String
+  returnedDate     DateTime @db.Date
+
+  issueItemId Int?
+  IssueItem   IssueItem? @relation(fields: [issueItemId], references: [id])
 
   @@index([issueItemId])
+}
+
+model Supplier {
+  id    Int    @id @default(autoincrement())
+  name  String
+  value String @unique
 }

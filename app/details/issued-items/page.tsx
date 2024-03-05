@@ -25,7 +25,7 @@ export default function IssuedItems() {
     fetcher,
   );
 
-  console.log(data);
+  console.log("LMAO: ", data);
   return (
     <div className="px-8 pt-6 pb-8">
       <div className="flex flex-col lg:flex-row justify-between">
@@ -40,14 +40,22 @@ export default function IssuedItems() {
               <TableHead className="w-[100px]">Index</TableHead>
               <TableHead>Date</TableHead>
               <TableHead className="w-[100px]">Product</TableHead>
-              <TableHead className="text-center">Person</TableHead>
+              <TableHead className="text-center">Issued to</TableHead>
               <TableHead className="text-right">Job Card</TableHead>
               <TableHead className="text-center">IssuedQuantity</TableHead>
+              <TableHead className="text-center">Issued By</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data &&
               data?.map((record: any, index: number) => {
+                console.log("BLUD: ", record?.ReturnedItem);
+                const returnedQuantity = record?.ReturnedItem?.reduce(
+                  (total: number, item: any) => total + item.returnedQuantity,
+                  0,
+                );
+                console.log("returned Quantity: ", returnedQuantity);
+
                 const parsedDate = parseISO(record.issuedAt);
                 const formattedDate = format(parsedDate, "dd MMMM yyyy");
                 return (
@@ -62,18 +70,16 @@ export default function IssuedItems() {
                       {record.jobCard}
                     </TableCell>
                     <TableCell className="text-center">
-                      {record.issuedQuantity}
+                      {/* subtracted the returned quantity */}
+                      {record.issuedQuantity - returnedQuantity}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {record.issuedBy}
                     </TableCell>
                   </TableRow>
                 );
               })}
           </TableBody>
-          {/* <TableFooter>
-            <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
-              <TableCell className="text-right">$2,500.00</TableCell>
-            </TableRow>
-          </TableFooter> */}
         </Table>
       </div>
     </div>

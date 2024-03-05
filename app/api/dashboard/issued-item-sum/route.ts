@@ -15,6 +15,34 @@ export async function GET(req: NextRequest) {
         lte: new Date(to),
       },
     },
+    // subtract the returned itsms valuess
   });
-  return NextResponse.json(record, { status: 200 });
+
+  const returnedItems = await prisma.returnedItem.aggregate({
+    _sum: {
+      returnedQuantity: true,
+    },
+    where: {
+      returnedDate: {
+        gte: new Date(from),
+        lte: new Date(to),
+      },
+    },
+  });
+
+  let netIssuedQuantity = null;
+
+  if (
+    record &&
+    record._sum &&
+    record._sum.issuedQuantity &&
+    returnedItems &&
+    returnedItems._sum &&
+    returnedItems._sum.returnedQuantity
+  ) {
+    netIssuedQuantity =
+      record._sum.issuedQuantity - returnedItems._sum.returnedQuantity;
+  }
+  console.log("nET ISSUED QUANTITY: ", netIssuedQuantity);
+  return NextResponse.json({ netIssuedQuantity }, { status: 200 });
 }

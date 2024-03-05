@@ -42,6 +42,7 @@ import { cn } from "@/lib/utils";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useUser } from "@clerk/nextjs";
 
 interface Employee {
   id: number;
@@ -73,6 +74,7 @@ const issueFormSchema = z
   });
 
 const IssueDialog = ({ item }: { item: Product }) => {
+  const { user } = useUser();
   const { employeeList } = useEmployees();
   const { mutate } = useSWRConfig();
 
@@ -102,10 +104,16 @@ const IssueDialog = ({ item }: { item: Product }) => {
   };
 
   const onSubmit = async (values: z.infer<typeof issueFormSchema>) => {
+    // send the name of person  who issued the time as well to the backend
     values.dateOfIssue = formatDate(values.dateOfIssue);
-
+    const issuedBy = user?.firstName;
+    console.log("ISSUED BY: ", issuedBy);
     try {
-      await axios.post(`/api/products/${id}/issue-product`, { ...values, id });
+      await axios.post(`/api/products/${id}/issue-product`, {
+        ...values,
+        id,
+        issuedBy,
+      });
       mutate(`/api/categories/${categoryId}`);
       mutate(`/api/dashboard/current-stock`);
 

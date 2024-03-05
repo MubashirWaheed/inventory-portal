@@ -75,9 +75,9 @@ const DashboardCards = ({
           <CardContent>
             <div className="text-3xl font-bold">
               {issuedItem &&
-              issuedItem._sum &&
-              issuedItem._sum.issuedQuantity !== null
-                ? issuedItem._sum.issuedQuantity
+              issuedItem.netIssuedQuantity &&
+              issuedItem.netIssuedQuantity !== null
+                ? issuedItem.netIssuedQuantity
                 : 0}
               {/* {issuedItem?._sum?.issuedQuantity} */}
             </div>
