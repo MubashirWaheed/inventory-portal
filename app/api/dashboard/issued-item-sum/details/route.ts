@@ -23,11 +23,6 @@ export async function GET(req: NextRequest) {
           itemCode: true,
         },
       },
-      // ReturnedItem: {
-      //   where: {
-      //     issueItemId: { equals: { id: true } }, // Replace id with the actual product ID
-      //   },
-      // },
     },
     orderBy: {
       issuedAt: "desc",
@@ -38,9 +33,12 @@ export async function GET(req: NextRequest) {
     issuedItems.map(async (issuedItem: any) => {
       const returnedItems = await prisma.returnedItem.findMany({
         where: {
-          issueItemId: issuedItem.productId, // Assuming productId refers to Product.id
-          // job card should also match
+          issueItemId: issuedItem.productId,
           jobCard: issuedItem.jobCard,
+          returnedDate: {
+            lte: new Date(to),
+            gte: new Date(from),
+          },
         },
       });
 

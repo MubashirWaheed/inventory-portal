@@ -29,6 +29,7 @@ model Product {
   IssuedItem         IssueItem[]
   AddStock           AddStock[]
   DailyStockQuantity DailyStockQuantity[]
+  ReturnedItem       ReturnedItem[]
 
   @@index([categoryId])
 }
@@ -101,7 +102,10 @@ model ReturnedItem {
 
   issueItemId Int?
   IssueItem   IssueItem? @relation(fields: [issueItemId], references: [id])
+  productId   Int?
+  Product     Product?   @relation(fields: [productId], references: [id])
 
+  @@index([productId])
   @@index([issueItemId])
 }
 

@@ -9,7 +9,6 @@ export async function GET(req: NextRequest) {
       Category: true,
     },
   });
-  console.log("PRODUCTS  ", data);
   return NextResponse.json(data, { status: 200 });
 }
 

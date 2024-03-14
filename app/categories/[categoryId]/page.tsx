@@ -105,7 +105,7 @@ const Category = () => {
           value={
             (table.getColumn("itemCode")?.getFilterValue() as string) ?? ""
           }
-          onChange={(event) =>
+          onChange={(event: any) =>
             table.getColumn("itemCode")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"

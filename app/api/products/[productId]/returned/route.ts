@@ -12,6 +12,7 @@ export async function POST(
   const request = await req.json();
   const { productId } = params;
   // Extract values
+  console.log("PRODUCT ID HERE: ", productId);
   console.log("REQUEST OBJECT: ", request);
   const { jobCard, quantity, returnedBy } = request;
   //link the item wit
@@ -24,6 +25,7 @@ export async function POST(
           returnedBy: returnedBy,
           returnedDate: currentUtcDate(),
           issueItemId: parseInt(productId),
+          productId: parseInt(productId),
         },
       });
 

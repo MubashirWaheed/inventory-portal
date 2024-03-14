@@ -8,7 +8,7 @@ import CardSkeleton from "@/components/CardSkeleton";
 import useDashboardTimeFrame from "@/hooks/useDashboardTimeFrame";
 
 import DashboardCards from "./components/DashboardCards";
-import { Protect, useAuth, useOrganizationList, useUser } from "@clerk/nextjs";
+import { Protect, useOrganizationList, useUser } from "@clerk/nextjs";
 import { useEffect } from "react";
 
 export default function Home() {
@@ -19,12 +19,6 @@ export default function Home() {
   });
 
   const { user } = useUser();
-
-  useEffect(() => {
-    if (user) {
-      console.log("CURRENT LOGGED USER: ", user?.firstName);
-    }
-  }, [user]);
 
   useEffect(() => {
     if (userMemberships.data && userMemberships.data.length !== 0) {
@@ -39,7 +33,7 @@ export default function Home() {
   const currentMonth = format(currentDate, "MMMM");
 
   const { data, isLoading: openingLoading } = useSWR(
-    "/api/dashboard/opening-stock",
+    `/api/dashboard/opening-stock?from=${date.from}`,
     fetcher,
   );
 
@@ -57,7 +51,6 @@ export default function Home() {
     `/api/dashboard/issued-item-sum?from=${date?.from}&to=${date?.to}`,
     fetcher,
   );
-  console.log('ISSUED ITEM SUN: ',issuedItem)
 
   const isLoading =
     issuedItemLoading ||
@@ -85,7 +78,7 @@ export default function Home() {
         ) : (
           <DashboardCards
             addedStock={addedStock}
-            data={data}
+            data={data?._sum}
             currentStockRecord={currentStockRecord}
             issuedItem={issuedItem}
             currentMonth={currentMonth}

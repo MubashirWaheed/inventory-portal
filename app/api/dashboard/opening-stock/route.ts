@@ -4,32 +4,25 @@ import { currentUtcDate } from "@/lib/currentUtcDate";
 import { prisma } from "@/db/db";
 
 // GET the stock count at the last date of previous month
+// FIX THIS FUCKING ROUTE
+
 export async function GET(req: NextRequest) {
-  const currentDate = currentUtcDate();
-  const lastDayOfPreviousMonth = endOfMonth(subMonths(currentDate, 1));
-  lastDayOfPreviousMonth.setUTCHours(0, 0, 0, 0);
-
-  const myDate = startOfMonth(currentDate);
-
-  const record = await prisma.totalStockCount.findFirst({
+  const from = req.nextUrl.searchParams.get("from") as string;
+  console.log("FROM LMAO : ", new Date(from));
+  const myDate = currentUtcDate();
+  // count
+  const count = await prisma.dailyStockQuantity.aggregate({
     where: {
       date: {
-        lt: myDate,
+        lt: new Date(from),
       },
     },
-    orderBy: {
-      date: "desc",
+
+    _sum: {
+      quantity: true,
     },
-    take: 1,
   });
 
-  console.log("record for the opening-stock: ", record);
-
-  if (record == null)
-    return NextResponse.json({ openingStock: 0 }, { status: 200 });
-
-  return NextResponse.json(
-    { openingStock: record.totalStockCount },
-    { status: 200 },
-  );
+  console.log("COUNT FOR THWE OPENING STOCK ", count);
+  return NextResponse.json(count, { status: 200 });
 }

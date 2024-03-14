@@ -12,19 +12,24 @@ const DashboardCards = ({
 }: any) => {
   return (
     <div className="mt-4 w-full h-full grid sm:grid-cols-2  lg:grid-cols-4 gap-4 ">
-      <Card className="transition-all ease-in-out  h-[150px] hover:cursor-pointer">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base font-medium">Opening Stock</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">{data?.openingStock}</div>
-          <p className="text-sm text-muted-foreground">
-            stock at the start of {currentMonth}
-          </p>
-        </CardContent>
-      </Card>
+      <Link href="/details/opening-stock">
+        <Card className="h-[150px] dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all  hover:cursor-pointer">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">
+              Opening Stock
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{data?.quantity}</div>
+            <p className="text-sm text-muted-foreground">
+              stock at the start of {currentMonth}
+            </p>
+          </CardContent>
+        </Card>
+      </Link>
+
       <Link href="/details/current-stock">
-        <Card className="h-[150px]  dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
+        <Card className="h-[150px] dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               Current Stock
@@ -79,10 +84,8 @@ const DashboardCards = ({
               issuedItem.netIssuedQuantity !== null
                 ? issuedItem.netIssuedQuantity
                 : 0}
-              {/* {issuedItem?._sum?.issuedQuantity} */}
             </div>
             <p className="text-sm text-muted-foreground">
-              {/* in the month of {currentMonth} */}
               for the above time period
             </p>
           </CardContent>
@@ -114,6 +117,36 @@ const DashboardCards = ({
           <CardContent>
             <p className="text-sm text-muted-foreground">
               Number of items issued to specific Person
+            </p>
+          </CardContent>
+        </Card>
+      </Link>
+
+      <Link href="/details/product-movement">
+        <Card className="h-[150px] dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">
+              Product Movement
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Details for product over a period of time
+            </p>
+          </CardContent>
+        </Card>
+      </Link>
+
+      <Link href="/details/inventory-report">
+        <Card className="h-[150px] dark:hover:scale-[1.01] hover:drop-shadow-md drop-shadow-sm ease-in-out  transition-all">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-medium">
+              Inventory Report
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Report for the time period
             </p>
           </CardContent>
         </Card>
