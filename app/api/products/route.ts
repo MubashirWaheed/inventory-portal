@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
   const allProducts = await prisma.product.findMany();
   return NextResponse.json(allProducts, { status: 200 });
 }
+export const revalidate = 0;
 
 // export async function GET(req: NextRequest) {
 //   const currentDate = new Date();

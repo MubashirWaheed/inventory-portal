@@ -29,9 +29,11 @@ export async function GET(
         },
       },
     },
+
     orderBy: {
       issuedAt: "desc",
     },
   });
+  console.log("JOB CARD SEARCH DETAILS: ", data);
   return NextResponse.json(data, { status: 200 });
 }

@@ -18,7 +18,6 @@ import { format, parseISO } from "date-fns";
 import useDashboardTimeFrameStore from "@/hooks/useDashboardTimeFrame";
 
 const SearchJobCard = () => {
-  const currentDate = new Date();
   const { date, setDate } = useDashboardTimeFrameStore();
   const [searchValue, setSearchValue] = useState("");
   const debounceValue = useDebounce(searchValue);
@@ -30,12 +29,51 @@ const SearchJobCard = () => {
     fetcher,
   );
 
+  const { data: issuedRecords } = useSWR(
+    debounceValue
+      ? `/api/dashboard/issued-item/search-job-card?jobCard=${debounceValue}&to=${date?.to}&from=${date?.from}`
+      : null,
+    fetcher,
+  );
+
+  const { data: returnedRecord } = useSWR(
+    debounceValue
+      ? `/api/dashboard/issued-item/returned?jobCard=${debounceValue}&to=${date?.to}&from=${date?.from}`
+      : null,
+    fetcher,
+  );
+
   const handleInput = (e: any) => {
     setSearchValue(e.target.value);
   };
   useEffect(() => {
     console.log("debounceValue: ", debounceValue);
   }, [debounceValue]);
+
+  useEffect(() => {
+    if (issuedRecords && returnedRecord) {
+      const mergedData: any = [];
+      returnedRecord.forEach((returnedItem: any) => {
+        const correspondingIssuedItem = issuedRecords.find(
+          (issuedItem: any) =>
+            issuedItem.jobCard === returnedItem.jobCard &&
+            issuedItem.productId === returnedItem.productId,
+        );
+
+        if (correspondingIssuedItem) {
+          mergedData.push({
+            returnedItem,
+            issuedItem: correspondingIssuedItem,
+          });
+        }
+      });
+      console.log("mergedData: ", mergedData);
+      // then merge the data
+      console.log("issuedRecords: ", issuedRecords);
+      console.log("returnedRecord: ", returnedRecord);
+    }
+  }, [issuedRecords, returnedRecord]);
+
   return (
     <div className="px-8 pt-6 pb-8">
       <div className="flex flex-col lg:flex-row justify-between">
@@ -66,7 +104,7 @@ const SearchJobCard = () => {
               <TableHead>Job Card</TableHead>
               <TableHead>Product</TableHead>
               <TableHead>Quantity</TableHead>
-              <TableHead>Person</TableHead>
+              <TableHead>Issued to</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -81,7 +119,9 @@ const SearchJobCard = () => {
                   <TableCell className="font-medium">
                     {record.Product.itemCode}
                   </TableCell>
-                  <TableCell>{record.issuedQuantity}</TableCell>
+                  <TableCell>
+                    <div className="">{record.issuedQuantity}</div>
+                  </TableCell>
                   <TableCell>{record.Employee.displayName}</TableCell>
                 </TableRow>
               );
