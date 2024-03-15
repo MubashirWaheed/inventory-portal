@@ -9,6 +9,9 @@ export async function GET(
   const from = req.nextUrl.searchParams.get("from") as string;
   const to = req.nextUrl.searchParams.get("to") as string;
 
+  console.log("FROM:", from);
+  console.log("TO:", to);
+
   const data = await prisma.issueItem.findMany({
     where: {
       issuedAt: {

@@ -18,8 +18,8 @@ export async function GET(
     where: {
       productId: parsedId,
       issuedAt: {
+        lte: new Date(to),
         gte: new Date(from),
-        lt: new Date(to),
       },
     },
   });
@@ -37,7 +37,7 @@ export async function GET(
     },
   });
   console.log("returnedItems._sum: ", returnedItems._sum);
-  console.log("issuedQuantity._sum: ", sumOfISsuedOvertime._sum);
+  console.log("issuedQuantity._sum: ", sumOfISsuedOvertime);
   const finalIssuedQuantity =
     //  @ts-ignore
     sumOfISsuedOvertime._sum.issuedQuantity -

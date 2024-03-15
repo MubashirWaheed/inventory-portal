@@ -324,24 +324,6 @@ const AddStockDialog = ({
               />
             )}
 
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem className="py-2 grid grid-cols-4 items-center">
-                  <FormLabel className="col-span-1 text-center">
-                    Quantity
-                  </FormLabel>
-                  <div className="col-span-3">
-                    <FormControl>
-                      <Input type="number" placeholder="12" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-
             {stockType == "returned" && (
               <FormField
                 control={form.control}
@@ -412,6 +394,24 @@ const AddStockDialog = ({
                 )}
               />
             )}
+
+            <FormField
+              control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem className="py-2 grid grid-cols-4 items-center">
+                  <FormLabel className="col-span-1 text-center">
+                    Quantity
+                  </FormLabel>
+                  <div className="col-span-3">
+                    <FormControl>
+                      <Input type="number" placeholder="12" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
 
             <DialogFooter>
               <Button disabled={!isValid || isSubmitting} type="submit">

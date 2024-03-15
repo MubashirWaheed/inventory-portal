@@ -50,29 +50,25 @@ const SearchJobCard = () => {
     console.log("debounceValue: ", debounceValue);
   }, [debounceValue]);
 
-  useEffect(() => {
-    if (issuedRecords && returnedRecord) {
-      const mergedData: any = [];
-      returnedRecord.forEach((returnedItem: any) => {
-        const correspondingIssuedItem = issuedRecords.find(
-          (issuedItem: any) =>
-            issuedItem.jobCard === returnedItem.jobCard &&
-            issuedItem.productId === returnedItem.productId,
-        );
+  // useEffect(() => {
+  //   if ((issuedRecords && returnedRecord) || issuedRecords) {
+  //     const mergedData: any = [];
+  //     issuedRecords.forEach((issuedRecord: any) => {
+  //       const correspondingIssuedItem = issuedRecords.find(
+  //         (issuedItem: any) =>
+  //           issuedItem.jobCard === returnedItem.jobCard &&
+  //           issuedItem.productId === returnedItem.productId,
+  //       );
 
-        if (correspondingIssuedItem) {
-          mergedData.push({
-            returnedItem,
-            issuedItem: correspondingIssuedItem,
-          });
-        }
-      });
-      console.log("mergedData: ", mergedData);
-      // then merge the data
-      console.log("issuedRecords: ", issuedRecords);
-      console.log("returnedRecord: ", returnedRecord);
-    }
-  }, [issuedRecords, returnedRecord]);
+  //       if (correspondingIssuedItem) {
+  //         mergedData.push({
+  //           returnedItem,
+  //           issuedItem: correspondingIssuedItem,
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, [issuedRecords, returnedRecord]);
 
   return (
     <div className="px-8 pt-6 pb-8">
@@ -108,7 +104,7 @@ const SearchJobCard = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {test?.map((record: any, index: number) => {
+            {issuedRecords?.map((record: any, index: number) => {
               const parsedDate = parseISO(record.issuedAt);
               const formattedDate = format(parsedDate, "dd MMMM yyyy");
               return (

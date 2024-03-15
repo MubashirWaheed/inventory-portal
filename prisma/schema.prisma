@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider     = "mysql"
+  provider     = "cockroachdb"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
@@ -12,14 +12,14 @@ generator client {
 }
 
 model Category {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
+  id        Int       @id @default(sequence())
+  name      String
   createdAt DateTime  @db.Date
   product   Product[]
 }
 
 model Product {
-  id                 Int                  @id @default(autoincrement())
+  id                 Int                  @id @default(sequence())
   createdAt          DateTime             @db.Date
   itemCode           String               @unique
   company            String
@@ -36,7 +36,7 @@ model Product {
 
 // TRACKS WHICH ITEM WAS ISSUED TO WHICH PERSON AT WHICH DATE
 model IssueItem {
-  id             Int      @id @default(autoincrement())
+  id             Int      @id @default(sequence())
   issuedAt       DateTime @db.Date
   jobCard        String
   issuedQuantity Int
@@ -59,7 +59,7 @@ model IssueItem {
 // DOESN"T TRACK THE WHOLE QUANTITY OF PRODUCT AT CERATIAN DATE
 
 model AddStock {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @default(sequence())
   addedAt   DateTime @db.Date
   quantity  Int
   productId Int
@@ -70,14 +70,14 @@ model AddStock {
 
 // EXACT TOTAL QUANTITY OF PRODUCTS IN THE STOCK
 model TotalStockCount {
-  id              Int      @id @default(autoincrement())
+  id              Int      @id @default(sequence())
   date            DateTime @db.Date
   totalStockCount Int
 }
 
 // EXACT QUANITY OF PRODUCT AT CERTAIN DAY
 model DailyStockQuantity {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @default(sequence())
   date      DateTime @db.Date
   quantity  Int
   productId Int
@@ -87,14 +87,14 @@ model DailyStockQuantity {
 }
 
 model Employee {
-  id          Int         @id @default(autoincrement())
+  id          Int         @id @default(sequence())
   displayName String
   value       String
   IssueItem   IssueItem[]
 }
 
 model ReturnedItem {
-  id               Int      @id @default(autoincrement())
+  id               Int      @id @default(sequence())
   jobCard          String
   returnedQuantity Int
   returnedBy       String
@@ -110,7 +110,7 @@ model ReturnedItem {
 }
 
 model Supplier {
-  id    Int    @id @default(autoincrement())
+  id    Int    @id @default(sequence())
   name  String
   value String @unique
 }

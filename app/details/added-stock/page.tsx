@@ -1,7 +1,7 @@
 "use client";
 import useDashboardTimeFrameStore from "@/hooks/useDashboardTimeFrame";
 import { fetcher } from "@/lib/fetecher";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import {
   Table,
@@ -14,21 +14,49 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format, parseISO } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { CSVLink } from "react-csv";
+
+import { DatePickerWithRange } from "@/components/ui/daterangepicker";
 
 const AddedStock = () => {
-  const { date } = useDashboardTimeFrameStore();
+  const { date, setDate } = useDashboardTimeFrameStore();
+
+  const [flattenedData, setFlattenedData] = useState([]);
 
   const { data } = useSWR(
     `/api/dashboard/items-added-sum/details?from=${date.from}&to=${date.to}`,
     fetcher,
   );
 
+  useEffect(() => {
+    console.log("DATA For bought:", data);
+    if (data && data.length > 0) {
+      const newData = data.map((item: any) => {
+        const { Product, ...rest } = item; // Destructure Product field and get rest of the fields
+        return { ...rest, itemCode: Product.itemCode }; // Spread rest of the fields and add itemCode
+      });
+      setFlattenedData(newData); // Update state with flattened data
+    }
+  }, [data]);
+
+  const fileName = "bought-details";
   return (
     <div className="px-8 pt-6 pb-8">
-      <div className="flex flex-col lg:flex-row justify-between">
+      <div className="pb-4 flex flex-col lg:flex-row justify-between">
         <h2 className=" font-bold text-3xl tracking-tight">Added Quantity </h2>
+        <div className="flex gap-4">
+          <Button size="sm">
+            <CSVLink filename={fileName} data={flattenedData}>
+              Download Data
+            </CSVLink>
+          </Button>
+          {
+            // @ts-ignore
+            <DatePickerWithRange date={date} setDate={setDate} />
+          }
+        </div>
       </div>
-      {/* Just fetch the details for the above time frame for now */}
       <div>
         <Table>
           <TableCaption>A list of recently added Stock.</TableCaption>
