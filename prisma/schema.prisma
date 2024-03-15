@@ -32,6 +32,8 @@ model Product {
   ReturnedItem       ReturnedItem[]
 
   @@index([categoryId])
+  @@index([itemCode]) // Index on itemCode field
+  @@index([createdAt])
 }
 
 // TRACKS WHICH ITEM WAS ISSUED TO WHICH PERSON AT WHICH DATE
