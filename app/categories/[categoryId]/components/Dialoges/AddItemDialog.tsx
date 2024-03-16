@@ -38,7 +38,7 @@ const formSchema = z.object({
       message: "Item code too long",
     })
     .trim(),
-  company: z.string().min(3).max(50).trim(),
+  company: z.string().trim(),
   quantity: z.coerce
     .number()
     .int()

@@ -22,7 +22,7 @@ model Product {
   id                 Int                  @id @default(sequence())
   createdAt          DateTime             @db.Date
   itemCode           String               @unique
-  company            String
+  company            String?
   quantity           Int
   categoryId         Int
   Category           Category?            @relation(fields: [categoryId], references: [id])
