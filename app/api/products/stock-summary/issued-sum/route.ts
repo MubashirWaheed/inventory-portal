@@ -1,12 +1,23 @@
 import { prisma } from "@/db/db";
 
 import { NextRequest, NextResponse } from "next/server";
+
 export async function GET(req: NextRequest) {
-  // summ of all the items issued
+  // do the date range
+  const from = req.nextUrl.searchParams.get("from") as string;
+  const to = req.nextUrl.searchParams.get("to") as string;
+
+  // sum of all the items issued
   const products = await prisma.issueItem.groupBy({
     by: ["productId"],
     _sum: {
       issuedQuantity: true,
+    },
+    where: {
+      issuedAt: {
+        gte: new Date(from),
+        lte: new Date(to),
+      },
     },
     orderBy: {
       productId: "asc",
@@ -21,7 +32,14 @@ export async function GET(req: NextRequest) {
       },
     },
     include: {
-      ReturnedItem: true,
+      ReturnedItem: {
+        where: {
+          returnedDate: {
+            gte: new Date(from),
+            lte: new Date(to), //nd date of your date range
+          },
+        },
+      },
     },
   });
 

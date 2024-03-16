@@ -22,7 +22,9 @@ const Inventoryreport = () => {
   const [myData, setMyData] = useState();
   // const { date, setDate } = useDashboardTimeFrame();
 
-  const { date: defaultDate } = useDashboardTimeFrame();
+  const { date: defaultDate, setDate } = useDashboardTimeFrame();
+
+  console.log("DEFAULT DATE: ", defaultDate);
 
   const { data: currentQuantityOfProducts } = useSWR(
     "/api/products/stock-summary/current-quantity",
@@ -30,7 +32,7 @@ const Inventoryreport = () => {
   );
 
   const { data: openingQuantity } = useSWR(
-    `/api/dailyStockQuantity?date=${defaultDate.from}`,
+    `/api/dailyStockQuantity?date=${defaultDate?.from}`,
     fetcher,
   );
 
@@ -82,7 +84,7 @@ const Inventoryreport = () => {
             </Button>
             {
               // @ts-ignore
-              <DatePickerWithRange date={date} setDate={setDate} />
+              <DatePickerWithRange date={defaultDate} setDate={setDate} />
             }
           </div>
         ) : (

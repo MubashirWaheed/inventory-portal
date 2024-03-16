@@ -1,16 +1,26 @@
 import { prisma } from "@/db/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const from = req.nextUrl.searchParams.get("from") as string;
+  const to = req.nextUrl.searchParams.get("to") as string;
+
   let products = await prisma.addStock.groupBy({
     by: ["productId"],
     _sum: {
       quantity: true,
     },
+    where: {
+      addedAt: {
+        gte: new Date(from),
+        lt: new Date(to),
+      },
+    },
     orderBy: {
       productId: "asc",
     },
   });
+
   const data = await prisma.product.findMany({
     where: {
       id: {
@@ -21,6 +31,17 @@ export async function GET() {
       id: true,
       itemCode: true,
     },
+
+    // include: {
+    //   ReturnedItem: {
+    //     where: {
+    //       returnedDate: {
+    //         gte: new Date(from),
+    //         lte: new Date(to), //nd date of your date range
+    //       },
+    //     },
+    //   },
+    // },
   });
 
   const mergedData = data.map((product) => {
