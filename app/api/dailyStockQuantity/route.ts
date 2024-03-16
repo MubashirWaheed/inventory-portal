@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   const firstDayOfPrevMonth = firstDayOfPreviousMonth();
   // read the the date sent in the url
   let from = req.nextUrl.searchParams.get("date") as string;
+  console.log("FROM: ", from);
 
   try {
     const latestDates = await prisma.dailyStockQuantity.findMany({
@@ -31,6 +32,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    console.log("LATEST DATA:", latestDates);
     return NextResponse.json(latestDates, { status: 200 });
   } catch (error) {
     console.log("ERROR GETTING DAILY STOCK QUANTITY", error);

@@ -20,7 +20,7 @@ import { mergeStockData } from "@/lib/mergeStockData";
 
 const Inventoryreport = () => {
   const [myData, setMyData] = useState();
-  const { date, setDate } = useDashboardTimeFrame();
+  // const { date, setDate } = useDashboardTimeFrame();
 
   const { date: defaultDate } = useDashboardTimeFrame();
 
@@ -33,15 +33,14 @@ const Inventoryreport = () => {
     `/api/dailyStockQuantity?date=${defaultDate.from}`,
     fetcher,
   );
-  // console.log("previous month", data);
 
   const { data: addedSumForProduct } = useSWR(
-    `/api/products/stock-summary/added-sum?from=${date.from}&&to=${date.to}`,
+    `/api/products/stock-summary/added-sum?from=${defaultDate?.from}&&to=${defaultDate?.to}`,
     fetcher,
   );
 
   const { data: issuedSumForProduct } = useSWR(
-    `/api/products/stock-summary/issued-sum?from=${date.from}&&to=${date.to}`,
+    `/api/products/stock-summary/issued-sum?from=${defaultDate?.from}&&to=${defaultDate?.to}`,
     fetcher,
   );
 

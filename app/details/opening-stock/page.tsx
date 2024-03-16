@@ -29,8 +29,11 @@ const OpeningStock = () => {
   const [date, setDate] = useState<Date>();
 
   const { date: defaultDate } = useDashboardTimeFrame();
-
-  const { data } = useSWR(`/api/dailyStockQuantity?date=${date}`, fetcher);
+  console.log("defaultDate: ", defaultDate);
+  const { data } = useSWR(
+    `/api/dailyStockQuantity?date=${defaultDate.from}`,
+    fetcher,
+  );
 
   useEffect(() => {
     if (defaultDate && Object.keys(defaultDate).length !== 0) {
@@ -68,9 +71,9 @@ const OpeningStock = () => {
               selected={date}
               onSelect={setDate}
               initialFocus
-              disabled={(date) =>
-                date > new Date() || date < new Date("2016-01-01")
-              }
+              // disabled={(date) =>
+              //   date > new Date() || date < new Date("2016-01-01")
+              // }
             />
           </PopoverContent>
         </Popover>
