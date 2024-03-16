@@ -68,8 +68,6 @@ const Login = () => {
         await setActive({ session: result.createdSessionId });
         router.push("/");
         setDisable(false);
-      } else {
-        // console.log(result);
       }
     } catch (err: any) {
       setErrorMessage("Wrong credentials");
