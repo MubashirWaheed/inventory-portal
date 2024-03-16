@@ -6,3 +6,5 @@ export async function GET() {
   const currentQauntityList = await prisma.product.findMany();
   return NextResponse.json(currentQauntityList, { status: 200 });
 }
+
+export const revalidate = 0;

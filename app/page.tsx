@@ -52,6 +52,10 @@ export default function Home() {
     fetcher,
   );
 
+  useEffect(() => {
+    console.log("issuedItem: ", issuedItem);
+  }, [issuedItem]);
+
   const isLoading =
     issuedItemLoading ||
     itemAddedSumLoading ||

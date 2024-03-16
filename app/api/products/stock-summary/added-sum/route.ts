@@ -38,3 +38,5 @@ export async function GET() {
 
   return NextResponse.json(mergedData, { status: 200 });
 }
+
+export const revalidate = 0;
