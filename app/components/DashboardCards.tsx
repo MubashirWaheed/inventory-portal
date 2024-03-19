@@ -10,6 +10,7 @@ const DashboardCards = ({
   issuedItem,
   currentMonth,
 }: any) => {
+  console.log("DATA FRO TEH OPENIONG:", data);
   return (
     <div className="mt-4 w-full h-full grid sm:grid-cols-2  lg:grid-cols-4 gap-4 ">
       <Link href="/details/opening-stock">
@@ -20,7 +21,7 @@ const DashboardCards = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{data?.quantity}</div>
+            <div className="text-3xl font-bold">{data}</div>
             <p className="text-sm text-muted-foreground">
               stock at the start of {currentMonth}
             </p>

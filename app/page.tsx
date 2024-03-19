@@ -32,7 +32,7 @@ export default function Home() {
 
   const currentMonth = format(currentDate, "MMMM");
 
-  const { data, isLoading: openingLoading } = useSWR(
+  const { data: openingCount, isLoading: openingLoading } = useSWR(
     `/api/dashboard/opening-stock?from=${date.from}`,
     fetcher,
   );
@@ -84,7 +84,7 @@ export default function Home() {
         ) : (
           <DashboardCards
             addedStock={addedStock}
-            data={data?._sum}
+            data={openingCount}
             currentStockRecord={currentStockRecord}
             issuedItem={issuedItem}
             currentMonth={currentMonth}
