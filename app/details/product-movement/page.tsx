@@ -58,6 +58,11 @@ const ProductMovement = () => {
 
   useEffect(() => {
     if (openingQuantityForProduct) {
+      listOfProducts?.find((record: any) => {
+        if (record.id === value) {
+          console.log("RECORD OF CAR WASH: ", record);
+        }
+      })?.quantity || "0";
       console.log("Product selected: ", value);
       console.log("openingQuantityForProduct: ", openingQuantityForProduct);
       console.log("boughtSum:", boughtSum);
@@ -99,7 +104,7 @@ const ProductMovement = () => {
           </PopoverTrigger>
           <PopoverContent className="w-[200px] p-0">
             <Command>
-              <CommandInput placeholder="Search Person..." />
+              <CommandInput placeholder="Search Product..." />
               <CommandEmpty>No Product Found.</CommandEmpty>
               <CommandGroup>
                 {listOfProducts?.map((product: any, index: number) => (
@@ -158,7 +163,7 @@ const ProductMovement = () => {
                     {value
                       ? listOfProducts?.find(
                           (record: any) => record.id === value,
-                        )?.quantity || "Unknown"
+                        )?.quantity || "0"
                       : "Select Product"}
                   </TableCell>
                 </TableRow>

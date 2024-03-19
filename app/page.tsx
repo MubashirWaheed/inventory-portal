@@ -71,7 +71,9 @@ export default function Home() {
             // @ts-ignore
             <DatePickerWithRange date={date} setDate={setDate} />
           }
-          <Protect permission="org:feature:create">
+          {/*  */}
+          {/*  org:feature:create*/}
+          <Protect permission="org:sys_memberships:manage">
             <CategoryDialog />
           </Protect>
         </div>

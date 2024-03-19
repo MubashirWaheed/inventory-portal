@@ -71,7 +71,8 @@ export const columns: ColumnDef<Product>[] = [
       const infoCasted = info as CellContext<RowType, string>;
       const employeeListData = (info as any)?.employeeList?.data;
       return (
-        <Protect permission="org:feature:create">
+        // org:feature:create
+        <Protect permission="org:sys_memberships:manage ">
           <AddStockDialog
             item={(info as any)?.row?.original}
             suppliersList={(info as any)?.suppliersList}

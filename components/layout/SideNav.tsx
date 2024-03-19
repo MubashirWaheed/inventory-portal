@@ -145,7 +145,9 @@ export function SideNav({ items, setOpen, className }: SideNavProps) {
         </Accordion>
 
         {/* SETTINGS */}
-        <Protect permission="org:feature:create">
+        {/* org:feature:create */}
+        {/* org:sys_memberships:manage */}
+        <Protect permission="org:sys_memberships:manage">
           <Link
             href={"/settings"}
             onClick={() => {

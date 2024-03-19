@@ -111,7 +111,9 @@ const Category = () => {
           className="max-w-sm"
         />
         <div className="flex gap-3">
-          <Protect permission="org:feature:create">
+          {/* org:feature:createorg:feature:create */}
+          {/*  */}
+          <Protect permission="org:sys_memberships:manage">
             <AddItemDialog />
           </Protect>
         </div>
