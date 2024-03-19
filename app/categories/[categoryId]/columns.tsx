@@ -72,7 +72,7 @@ export const columns: ColumnDef<Product>[] = [
       const employeeListData = (info as any)?.employeeList?.data;
       return (
         // org:feature:create
-        <Protect permission="org:sys_memberships:manage ">
+        <Protect permission="org:sys_memberships:manage">
           <AddStockDialog
             item={(info as any)?.row?.original}
             suppliersList={(info as any)?.suppliersList}
