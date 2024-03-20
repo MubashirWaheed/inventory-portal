@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 
 // req.url
 export default authMiddleware({
+  debug: true,
   afterAuth(auth, req) {
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: `${req.url}/sign-in` });
