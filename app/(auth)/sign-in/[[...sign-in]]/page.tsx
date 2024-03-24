@@ -13,7 +13,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 import { useSession, useSignIn } from "@clerk/nextjs";
@@ -80,6 +86,8 @@ const Login = () => {
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Login to the portal</CardTitle>
+          <CardDescription>Email: admin@gmail.com </CardDescription>
+          <CardDescription>Password: admin12345</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
